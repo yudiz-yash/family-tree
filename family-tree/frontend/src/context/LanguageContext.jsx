@@ -80,6 +80,13 @@ const translations = {
     contact: 'Contact',
     profileComplete: '✓ Profile Complete',
     profileIncomplete: '⚠ Profile Incomplete',
+    editProfileBtn: 'Edit Profile',
+    editProfileTitle: 'Edit Profile',
+    editProfileSub: 'Update your account details',
+    updateProfile: 'Update Profile',
+    updatingProfile: 'Updating...',
+    profileUpdated: 'Profile updated successfully!',
+    failedToUpdate: 'Failed to update profile',
 
     // family tree builder page
     back: 'Back',
@@ -241,6 +248,13 @@ const translations = {
     contact: 'સંપર્ક',
     profileComplete: '✓ પ્રોફાઇલ પૂર્ણ',
     profileIncomplete: '⚠ પ્રોફાઇલ અધૂરી',
+    editProfileBtn: 'પ્રોફાઇલ સંપાદિત કરો',
+    editProfileTitle: 'પ્રોફાઇલ સંપાદિત કરો',
+    editProfileSub: 'તમારા ખાતાની વિગતો અપડેટ કરો',
+    updateProfile: 'પ્રોફાઇલ અપડેટ કરો',
+    updatingProfile: 'અપડેટ થઈ રહ્યું છે...',
+    profileUpdated: 'પ્રોફાઇલ સફળતાપૂર્વક અપડેટ!',
+    failedToUpdate: 'પ્રોફાઇલ અપડેટ કરવામાં નિષ્ફળ',
 
     // family tree builder page
     back: 'પાછળ',

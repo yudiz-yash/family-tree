@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import CompleteProfile from './pages/CompleteProfile';
 import Dashboard from './pages/Dashboard';
 import FamilyTreeBuilder from './pages/FamilyTreeBuilder';
+import EditProfile from './pages/EditProfile';
 import { LanguageProvider } from './context/LanguageContext';
 
 function App() {
@@ -39,6 +40,14 @@ function App() {
           element={
             <PrivateRoute>
               <FamilyTreeBuilder />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/edit-profile"
+          element={
+            <PrivateRoute>
+              <EditProfile />
             </PrivateRoute>
           }
         />

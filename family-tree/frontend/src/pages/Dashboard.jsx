@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiUsers, FiGitMerge, FiArrowRight, FiPlusCircle, FiUser, FiMapPin, FiPhone } from 'react-icons/fi';
+import { FiUsers, FiGitMerge, FiArrowRight, FiPlusCircle, FiUser, FiMapPin, FiPhone, FiEdit2 } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
@@ -144,6 +144,13 @@ function Dashboard() {
                     <h5 className="mb-0 fw-bold" style={{ color: '#333' }}>{t.myProfile}</h5>
                     <small style={{ color: '#888' }}>{t.myProfileSub}</small>
                   </div>
+                  <button
+                    className="ms-auto btn btn-sm d-flex align-items-center gap-1 fw-semibold"
+                    style={{ background: '#f1eeff', color: '#6C3FC5', border: '1.5px solid #e0d5ff', borderRadius: 9, fontSize: 13 }}
+                    onClick={() => navigate('/edit-profile')}
+                  >
+                    <FiEdit2 size={13} /> {t.editProfileBtn}
+                  </button>
                 </div>
 
                 <div className="d-flex flex-column gap-3">
