@@ -14,6 +14,7 @@ function CompleteProfile() {
     lastName: '',
     city: '',
     kuldeviName: '',
+    surapura: '',
     contactNumber: ''
   });
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ function CompleteProfile() {
     if (!form.lastName.trim()) errs.lastName = t.lastNameRequired;
     if (!form.city.trim()) errs.city = t.cityRequired;
     if (!form.kuldeviName.trim()) errs.kuldeviName = t.kuldeviRequired;
+    if (!form.surapura.trim()) errs.surapura = t.surapuraRequired;
     if (!form.contactNumber.trim()) errs.contactNumber = t.contactRequired;
     return errs;
   };
@@ -124,6 +126,21 @@ function CompleteProfile() {
               onChange={(e) => setForm({ ...form, kuldeviName: e.target.value })}
             />
             {errors.kuldeviName && <div className="invalid-feedback">{errors.kuldeviName}</div>}
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">
+              <span style={{ fontSize: 14, marginRight: 4 }}>🏘️</span>
+              {t.surapura}
+            </label>
+            <input
+              type="text"
+              className={`form-control ${errors.surapura ? 'is-invalid' : ''}`}
+              placeholder={t.surapuraPlaceholder}
+              value={form.surapura}
+              onChange={(e) => setForm({ ...form, surapura: e.target.value })}
+            />
+            {errors.surapura && <div className="invalid-feedback">{errors.surapura}</div>}
           </div>
 
           <div className="mb-4">

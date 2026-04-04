@@ -24,6 +24,10 @@ const nodeSchema = new mongoose.Schema(
     parentId: {
       type: String,
       default: null
+    },
+    dateOfBirth: {
+      type: String,
+      default: ''
     }
   },
   { _id: false }

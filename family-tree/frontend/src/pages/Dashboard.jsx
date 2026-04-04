@@ -169,6 +169,13 @@ function Dashboard() {
                     </div>
                   </div>
                   <div className="d-flex align-items-center gap-2" style={{ fontSize: 14 }}>
+                    <span style={{ fontSize: 16, flexShrink: 0 }}>🏘️</span>
+                    <div>
+                      <div style={{ color: '#888', fontSize: 12 }}>{t.surapuraLabel}</div>
+                      <div style={{ fontWeight: 600 }}>{user?.surapura || '—'}</div>
+                    </div>
+                  </div>
+                  <div className="d-flex align-items-center gap-2" style={{ fontSize: 14 }}>
                     <FiPhone size={16} style={{ color: '#6C3FC5', flexShrink: 0 }} />
                     <div>
                       <div style={{ color: '#888', fontSize: 12 }}>{t.contact}</div>

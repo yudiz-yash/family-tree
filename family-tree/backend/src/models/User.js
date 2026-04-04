@@ -34,6 +34,11 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: ''
     },
+    surapura: {
+      type: String,
+      trim: true,
+      default: ''
+    },
     contactNumber: {
       type: String,
       trim: true,

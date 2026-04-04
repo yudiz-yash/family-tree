@@ -13,6 +13,7 @@ router.put(
     body('lastName').notEmpty().withMessage('Last name is required'),
     body('city').notEmpty().withMessage('City is required'),
     body('kuldeviName').notEmpty().withMessage('Kuldevi name is required'),
+    body('surapura').notEmpty().withMessage('Surapura is required'),
     body('contactNumber').notEmpty().withMessage('Contact number is required')
   ],
   async (req, res) => {
@@ -21,7 +22,7 @@ router.put(
       return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { firstName, lastName, city, kuldeviName, contactNumber } = req.body;
+    const { firstName, lastName, city, kuldeviName, surapura, contactNumber } = req.body;
 
     try {
       const user = await User.findByIdAndUpdate(
@@ -31,6 +32,7 @@ router.put(
           lastName,
           city,
           kuldeviName,
+          surapura,
           contactNumber,
           profileCompleted: true
         },
@@ -47,6 +49,7 @@ router.put(
           lastName: user.lastName,
           city: user.city,
           kuldeviName: user.kuldeviName,
+          surapura: user.surapura,
           contactNumber: user.contactNumber,
           profileCompleted: user.profileCompleted,
           role: user.role
@@ -76,6 +79,7 @@ router.get('/profile', protect, async (req, res) => {
         lastName: user.lastName,
         city: user.city,
         kuldeviName: user.kuldeviName,
+        surapura: user.surapura,
         contactNumber: user.contactNumber,
         profileCompleted: user.profileCompleted,
         role: user.role

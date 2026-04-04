@@ -23,7 +23,7 @@ function deleteNodeAndDescendants(nodes, nodeId) {
   return nodes.filter((n) => !toDelete.has(n.nodeId));
 }
 
-const INITIAL_FORM = { name: '', nickname: '', gender: 'male' };
+const INITIAL_FORM = { name: '', nickname: '', gender: 'male', dateOfBirth: '' };
 
 /* ─── Member Modal ─────────────────────────────────────────────── */
 function NodeModal({ open, onClose, onSave, title, initialData }) {
@@ -142,6 +142,28 @@ function NodeModal({ open, onClose, onSave, title, initialData }) {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Date of Birth */}
+        <div className="mb-4">
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.6)', letterSpacing: 0.5, display: 'block', marginBottom: 7 }}>
+            {t.dobLabel} <span style={{ color: 'rgba(255,255,255,0.3)' }}>{t.dobOptional}</span>
+          </label>
+          <input
+            type="date"
+            value={form.dateOfBirth}
+            onChange={e => setForm({ ...form, dateOfBirth: e.target.value })}
+            style={{
+              width: '100%', padding: '12px 16px',
+              background: 'rgba(255,255,255,0.07)',
+              border: '2px solid rgba(139,92,246,0.3)',
+              borderRadius: 12, color: form.dateOfBirth ? '#fff' : 'rgba(255,255,255,0.35)',
+              fontSize: 14, fontFamily: 'Poppins, sans-serif', outline: 'none',
+              colorScheme: 'dark'
+            }}
+            onFocus={e => e.target.style.borderColor = '#8B5CF6'}
+            onBlur={e => e.target.style.borderColor = 'rgba(139,92,246,0.3)'}
+          />
         </div>
 
         {/* Actions */}
@@ -359,7 +381,7 @@ export default function FamilyTreeBuilder() {
   const openEditModal = (nodeId) => {
     const n = nodes.find(x => x.nodeId === nodeId);
     if (!n) return;
-    setModal({ open: true, title: t.editMember, type: 'edit', editNodeId: nodeId, initialData: { name: n.name, nickname: n.nickname, gender: n.gender } });
+    setModal({ open: true, title: t.editMember, type: 'edit', editNodeId: nodeId, initialData: { name: n.name, nickname: n.nickname, gender: n.gender, dateOfBirth: n.dateOfBirth || '' } });
   };
 
   const closeModal = () => setModal({ open: false, title: '', type: null, editNodeId: null, initialData: null });

@@ -117,6 +117,7 @@ function UserDetail() {
               { icon: FiUser, label: 'Last Name', value: user.lastName || '—' },
               { icon: FiMapPin, label: 'City', value: user.city || '—' },
               { label: 'Kuldevi', value: user.kuldeviName || '—', emoji: '🕉️' },
+              { label: 'Surapura', value: user.surapura || '—', emoji: '🏘️' },
               { icon: FiPhone, label: 'Contact', value: user.contactNumber || '—' },
               { label: 'Joined', value: formatDate(user.createdAt), emoji: '📅' }
             ].map((row) => (
