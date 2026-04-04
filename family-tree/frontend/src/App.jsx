@@ -7,9 +7,11 @@ import Signup from './pages/Signup';
 import CompleteProfile from './pages/CompleteProfile';
 import Dashboard from './pages/Dashboard';
 import FamilyTreeBuilder from './pages/FamilyTreeBuilder';
+import { LanguageProvider } from './context/LanguageContext';
 
 function App() {
   return (
+    <LanguageProvider>
     <BrowserRouter>
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       <Routes>
@@ -43,6 +45,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
+    </LanguageProvider>
   );
 }
 

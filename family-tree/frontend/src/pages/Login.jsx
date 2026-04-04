@@ -3,18 +3,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { FiMail, FiLock, FiGitMerge } from 'react-icons/fi';
 import api from '../api/axios';
+import { useLanguage } from '../context/LanguageContext';
+import LangSwitcher from '../components/LangSwitcher';
 
 function Login() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   const validate = () => {
     const errs = {};
-    if (!form.email) errs.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Invalid email';
-    if (!form.password) errs.password = 'Password is required';
+    if (!form.email) errs.email = t.emailRequired;
+    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = t.invalidEmail;
+    if (!form.password) errs.password = t.passwordRequired;
     return errs;
   };
 
@@ -32,14 +35,14 @@ function Login() {
       const { token, user } = res.data;
       localStorage.setItem('family_tree_token', token);
       localStorage.setItem('family_tree_user', JSON.stringify(user));
-      toast.success('Login successful!');
+      toast.success(t.loginSuccess);
       if (user.profileCompleted) {
         navigate('/dashboard');
       } else {
         navigate('/complete-profile');
       }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Login failed';
+      const msg = err.response?.data?.message || t.loginFailed;
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -48,16 +51,17 @@ function Login() {
 
   return (
     <div className="auth-container">
+      <LangSwitcher />
       <div className="auth-card">
         <div className="auth-logo">
           <FiGitMerge size={48} color="#6C3FC5" />
-          <h1>FamilyTree</h1>
-          <p>Sign in to your account</p>
+          <h1>{t.brandName}</h1>
+          <p>{t.signInTitle}</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Email Address</label>
+            <label className="form-label">{t.emailAddress}</label>
             <div className="input-group">
               <span className="input-group-text" style={{ background: '#f8f4ff', border: '2px solid #e8e0f5', borderRight: 'none' }}>
                 <FiMail color="#6C3FC5" />
@@ -75,7 +79,7 @@ function Login() {
           </div>
 
           <div className="mb-4">
-            <label className="form-label">Password</label>
+            <label className="form-label">{t.password}</label>
             <div className="input-group">
               <span className="input-group-text" style={{ background: '#f8f4ff', border: '2px solid #e8e0f5', borderRight: 'none' }}>
                 <FiLock color="#6C3FC5" />
@@ -84,7 +88,7 @@ function Login() {
                 type="password"
                 className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                 style={{ borderLeft: 'none' }}
-                placeholder="Your password"
+                placeholder={t.yourPassword}
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
@@ -93,14 +97,14 @@ function Login() {
           </div>
 
           <button type="submit" className="btn-primary-custom" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? t.signingIn : t.signIn}
           </button>
         </form>
 
         <div className="text-center mt-4" style={{ fontSize: '14px', color: '#888' }}>
-          Don't have an account?{' '}
+          {t.noAccount}{' '}
           <Link to="/signup" style={{ color: '#6C3FC5', fontWeight: 600, textDecoration: 'none' }}>
-            Sign up
+            {t.signUpLink}
           </Link>
         </div>
       </div>

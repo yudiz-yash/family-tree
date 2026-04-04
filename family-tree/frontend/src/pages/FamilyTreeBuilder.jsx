@@ -7,6 +7,7 @@ import {
 import Navbar from '../components/Navbar';
 import FamilyTreeFlow from '../components/FamilyTreeFlow';
 import api from '../api/axios';
+import { useLanguage } from '../context/LanguageContext';
 
 function generateNodeId() {
   return `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -26,6 +27,7 @@ const INITIAL_FORM = { name: '', nickname: '', gender: 'male' };
 
 /* ─── Member Modal ─────────────────────────────────────────────── */
 function NodeModal({ open, onClose, onSave, title, initialData }) {
+  const { t } = useLanguage();
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
 
@@ -36,88 +38,128 @@ function NodeModal({ open, onClose, onSave, title, initialData }) {
   if (!open) return null;
 
   const handleSave = () => {
-    if (!form.name.trim()) { setErrors({ name: 'Name is required' }); return; }
+    if (!form.name.trim()) { setErrors({ name: t.nameRequired }); return; }
     onSave(form);
   };
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+      position: 'fixed', inset: 0,
+      background: 'rgba(15,10,40,0.75)',
+      backdropFilter: 'blur(6px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       zIndex: 9999, padding: 16
     }} onClick={onClose}>
       <div style={{
-        background: '#fff', borderRadius: 20, padding: 28, width: '100%', maxWidth: 420,
-        boxShadow: '0 20px 60px rgba(0,0,0,0.25)'
+        background: 'linear-gradient(145deg,#1e1b4b,#2d1a5a)',
+        borderRadius: 24, padding: '32px 28px',
+        width: '100%', maxWidth: 430,
+        boxShadow: '0 32px 80px rgba(0,0,0,0.55)',
+        border: '1px solid rgba(139,92,246,0.25)'
       }} onClick={e => e.stopPropagation()}>
+
+        {/* header */}
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <h5 className="mb-0 fw-bold" style={{ color: '#6C3FC5' }}>{title}</h5>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', padding: 4 }}>
-            <FiX size={20} />
+          <div>
+            <h5 className="mb-0 fw-bold" style={{ color: '#fff', fontSize: 18 }}>{title}</h5>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>{t.fillDetails}</div>
+          </div>
+          <button onClick={onClose} style={{
+            background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)',
+            borderRadius: 10, cursor: 'pointer', color: 'rgba(255,255,255,0.6)',
+            padding: '6px 8px', lineHeight: 1
+          }}>
+            <FiX size={18} />
           </button>
         </div>
 
+        {/* Name */}
         <div className="mb-3">
-          <label className="form-label fw-semibold" style={{ color: '#444' }}>
-            Name <span style={{ color: '#dc3545' }}>*</span>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.6)', letterSpacing: 0.5, display: 'block', marginBottom: 7 }}>
+            {t.fullNameLabel} <span style={{ color: '#f87171' }}>*</span>
           </label>
           <input
             type="text"
-            className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-            placeholder="Full name"
+            placeholder={t.enterFullName}
             value={form.name}
             onChange={e => setForm({ ...form, name: e.target.value })}
             autoFocus
-            style={{ borderRadius: 10, border: '2px solid #e8e0f5', padding: '10px 14px' }}
+            style={{
+              width: '100%', padding: '12px 16px',
+              background: 'rgba(255,255,255,0.07)',
+              border: `2px solid ${errors.name ? '#f87171' : 'rgba(139,92,246,0.3)'}`,
+              borderRadius: 12, color: '#fff', fontSize: 14,
+              fontFamily: 'Poppins, sans-serif', outline: 'none',
+              transition: 'border-color 0.2s'
+            }}
+            onFocus={e => e.target.style.borderColor = '#8B5CF6'}
+            onBlur={e => e.target.style.borderColor = errors.name ? '#f87171' : 'rgba(139,92,246,0.3)'}
           />
-          {errors.name && <div className="invalid-feedback">{errors.name}</div>}
+          {errors.name && <div style={{ color: '#f87171', fontSize: 12, marginTop: 5 }}>{errors.name}</div>}
         </div>
 
-        <div className="mb-3">
-          <label className="form-label fw-semibold" style={{ color: '#444' }}>Nickname (optional)</label>
+        {/* Nickname */}
+        <div className="mb-4">
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.6)', letterSpacing: 0.5, display: 'block', marginBottom: 7 }}>
+            {t.nicknameLabel} <span style={{ color: 'rgba(255,255,255,0.3)' }}>{t.optional}</span>
+          </label>
           <input
             type="text"
-            className="form-control"
-            placeholder="e.g. Baba, Dadi, Chiku..."
+            placeholder={t.nicknamePlaceholder}
             value={form.nickname}
             onChange={e => setForm({ ...form, nickname: e.target.value })}
-            style={{ borderRadius: 10, border: '2px solid #e8e0f5', padding: '10px 14px' }}
+            style={{
+              width: '100%', padding: '12px 16px',
+              background: 'rgba(255,255,255,0.07)',
+              border: '2px solid rgba(139,92,246,0.3)',
+              borderRadius: 12, color: '#fff', fontSize: 14,
+              fontFamily: 'Poppins, sans-serif', outline: 'none'
+            }}
+            onFocus={e => e.target.style.borderColor = '#8B5CF6'}
+            onBlur={e => e.target.style.borderColor = 'rgba(139,92,246,0.3)'}
           />
         </div>
 
-        <div className="mb-4">
-          <label className="form-label fw-semibold" style={{ color: '#444' }}>Gender</label>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {['male', 'female', 'other'].map(g => (
-              <div
-                key={g}
-                onClick={() => setForm({ ...form, gender: g })}
-                style={{
-                  flex: 1, padding: '10px 8px', borderRadius: 10, textAlign: 'center',
-                  cursor: 'pointer', fontWeight: 600, fontSize: 13, textTransform: 'capitalize',
-                  border: `2px solid ${form.gender === g ? (g === 'male' ? '#3b82f6' : g === 'female' ? '#ec4899' : '#8b5cf6') : '#e8e0f5'}`,
-                  background: form.gender === g
-                    ? g === 'male' ? '#eff6ff' : g === 'female' ? '#fdf2f8' : '#f5f3ff'
-                    : '#fafafa',
-                  color: form.gender === g
-                    ? g === 'male' ? '#1d4ed8' : g === 'female' ? '#be185d' : '#5b21b6'
-                    : '#888',
-                  transition: 'all 0.15s'
-                }}
-              >
-                {g === 'male' ? '♂ Male' : g === 'female' ? '♀ Female' : '⚧ Other'}
+        {/* Gender */}
+        <div className="mb-5">
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.6)', letterSpacing: 0.5, display: 'block', marginBottom: 10 }}>{t.genderLabel}</label>
+          <div style={{ display: 'flex', gap: 10 }}>
+            {[
+              { val: 'male',   icon: '♂', label: t.genderMale,   ac: '#3b82f6', bg: 'rgba(59,130,246,0.15)' },
+              { val: 'female', icon: '♀', label: t.genderFemale, ac: '#ec4899', bg: 'rgba(236,72,153,0.15)' },
+              { val: 'other',  icon: '⚧', label: t.genderOther,  ac: '#8b5cf6', bg: 'rgba(139,92,246,0.15)' },
+            ].map(g => (
+              <div key={g.val} onClick={() => setForm({ ...form, gender: g.val })} style={{
+                flex: 1, padding: '12px 8px', borderRadius: 12, textAlign: 'center',
+                cursor: 'pointer', fontWeight: 600, fontSize: 13,
+                border: `2px solid ${form.gender === g.val ? g.ac : 'rgba(255,255,255,0.1)'}`,
+                background: form.gender === g.val ? g.bg : 'rgba(255,255,255,0.04)',
+                color: form.gender === g.val ? g.ac : 'rgba(255,255,255,0.45)',
+                transition: 'all 0.18s'
+              }}>
+                <div style={{ fontSize: 20, marginBottom: 4 }}>{g.icon}</div>
+                {g.label}
               </div>
             ))}
           </div>
         </div>
 
-        <div className="d-flex gap-2">
-          <button className="btn flex-fill fw-semibold"
-            style={{ border: '2px solid #e8e0f5', borderRadius: 10, padding: '10px', color: '#666' }}
-            onClick={onClose}>Cancel</button>
-          <button className="btn flex-fill fw-semibold"
-            style={{ background: 'linear-gradient(135deg,#6C3FC5,#4c1d95)', color: '#fff', borderRadius: 10, padding: '10px', border: 'none' }}
-            onClick={handleSave}>Save Member</button>
+        {/* Actions */}
+        <div className="d-flex gap-3">
+          <button onClick={onClose} style={{
+            flex: 1, padding: '12px', borderRadius: 12, fontWeight: 600, fontSize: 14,
+            background: 'rgba(255,255,255,0.07)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            color: 'rgba(255,255,255,0.6)', cursor: 'pointer',
+            fontFamily: 'Poppins, sans-serif'
+          }}>{t.cancel}</button>
+          <button onClick={handleSave} style={{
+            flex: 1, padding: '12px', borderRadius: 12, fontWeight: 700, fontSize: 14,
+            background: 'linear-gradient(135deg,#6C3FC5,#8B5CF6)',
+            border: 'none', color: '#fff', cursor: 'pointer',
+            boxShadow: '0 4px 18px rgba(108,63,197,0.5)',
+            fontFamily: 'Poppins, sans-serif'
+          }}>{t.saveMember}</button>
         </div>
       </div>
     </div>
@@ -126,90 +168,106 @@ function NodeModal({ open, onClose, onSave, title, initialData }) {
 
 /* ─── Floating Action Panel ────────────────────────────────────── */
 function ActionPanel({ selectedNode, nodes, onAdd, onEdit, onDelete, onSave, saving }) {
-  const btnBase = {
-    display: 'flex', alignItems: 'center', gap: 8,
-    padding: '9px 14px', borderRadius: 10, fontWeight: 600,
-    fontSize: 13, cursor: 'pointer', border: 'none', width: '100%',
-    transition: 'opacity 0.15s'
+  const { t } = useLanguage();
+  const base = {
+    display: 'flex', alignItems: 'center', gap: 9,
+    padding: '10px 14px', borderRadius: 12, fontWeight: 600,
+    fontSize: 13, cursor: 'pointer', width: '100%',
+    fontFamily: 'Poppins, sans-serif', transition: 'all 0.18s',
+    border: '1px solid transparent'
   };
+  const ghostBtn = (active, ac) => ({
+    ...base,
+    background: active ? `rgba(${ac},0.15)` : 'rgba(255,255,255,0.04)',
+    color: active ? `rgb(${ac})` : 'rgba(255,255,255,0.3)',
+    border: `1px solid ${active ? `rgba(${ac},0.35)` : 'rgba(255,255,255,0.07)'}`,
+    cursor: active ? 'pointer' : 'not-allowed'
+  });
 
   return (
     <div style={{
-      background: '#fff',
-      borderRadius: 18,
-      padding: 18,
-      boxShadow: '0 8px 32px rgba(108,63,197,0.18)',
-      border: '1px solid #e8e0f5',
+      background: 'linear-gradient(160deg,#050E07,#071A0C)',
+      borderRadius: 20,
+      padding: '18px 16px',
+      boxShadow: '0 16px 48px rgba(0,0,0,0.6)',
+      border: '1px solid rgba(107,58,42,0.45)',
       display: 'flex', flexDirection: 'column', gap: 8,
-      minWidth: 210
+      minWidth: 220, maxWidth: 240
     }}>
-      {/* Add root */}
-      <button style={{ ...btnBase, background: '#f5f0ff', color: '#6C3FC5' }}
+
+      {/* section label */}
+      <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(76,175,122,0.7)', letterSpacing: 1.5, padding: '0 2px 2px' }}>
+        🌿 {t.growYourTree}
+      </div>
+
+      <button style={{ ...base, background: 'rgba(27,77,46,0.6)', color: '#4CAF7A', border: '1px solid rgba(76,175,122,0.4)' }}
         onClick={() => onAdd('root')}>
-        <FiPlus size={15} /> Add Root Member
+        🌱 {t.addRootAncestor}
       </button>
 
-      <div style={{ height: 1, background: '#f0e8ff', margin: '2px 0' }} />
-
-      {/* Add relative — only when something selected */}
-      <button
-        style={{ ...btnBase, background: selectedNode ? '#eff6ff' : '#f9f9f9', color: selectedNode ? '#1d4ed8' : '#bbb' }}
-        disabled={!selectedNode} onClick={() => onAdd('child')}>
-        <FiUserPlus size={15} /> Add Child
+      <button style={ghostBtn(!!selectedNode, '59,130,246')} disabled={!selectedNode} onClick={() => onAdd('child')}>
+        <FiUserPlus size={15} /> {t.addChild}
       </button>
-      <button
-        style={{ ...btnBase, background: selectedNode ? '#f0fdf4' : '#f9f9f9', color: selectedNode ? '#15803d' : '#bbb' }}
-        disabled={!selectedNode} onClick={() => onAdd('sibling')}>
-        <FiUsers size={15} /> Add Sibling
+      <button style={ghostBtn(!!selectedNode, '34,197,94')} disabled={!selectedNode} onClick={() => onAdd('sibling')}>
+        <FiUsers size={15} /> {t.addSibling}
       </button>
-      <button
-        style={{ ...btnBase, background: selectedNode ? '#fdf4ff' : '#f9f9f9', color: selectedNode ? '#7e22ce' : '#bbb' }}
-        disabled={!selectedNode} onClick={() => onAdd('parent')}>
-        <FiUser size={15} /> Add Parent
+      <button style={ghostBtn(!!selectedNode, '168,85,247')} disabled={!selectedNode} onClick={() => onAdd('parent')}>
+        <FiUser size={15} /> {t.addParent}
       </button>
 
-      {/* Selected info + edit/delete */}
-      {selectedNode && (
+      {/* divider */}
+      <div style={{ height: 1, background: 'rgba(107,58,42,0.3)', margin: '4px 0' }} />
+
+      {/* selected card */}
+      {selectedNode ? (
         <>
-          <div style={{ height: 1, background: '#f0e8ff', margin: '2px 0' }} />
           <div style={{
-            background: '#f8f4ff', borderRadius: 10, padding: '10px 12px',
-            borderLeft: '3px solid #6C3FC5'
+            background: 'rgba(108,63,197,0.2)',
+            border: '1px solid rgba(139,92,246,0.35)',
+            borderRadius: 12, padding: '10px 12px'
           }}>
-            <div style={{ fontSize: 11, color: '#6C3FC5', fontWeight: 700, marginBottom: 3 }}>SELECTED</div>
-            <div style={{ fontWeight: 700, fontSize: 13, color: '#1a1a2e' }}>{selectedNode.name}</div>
+            <div style={{ fontSize: 10, color: '#a78bfa', fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>✓ {t.selectedLabel}</div>
+            <div style={{ fontWeight: 700, fontSize: 13, color: '#fff' }}>{selectedNode.name}</div>
             {selectedNode.nickname && (
-              <div style={{ fontSize: 11, color: '#888', fontStyle: 'italic' }}>"{selectedNode.nickname}"</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', fontStyle: 'italic', marginTop: 2 }}>"{selectedNode.nickname}"</div>
             )}
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            <button
-              style={{ ...btnBase, flex: 1, background: '#fffbeb', color: '#92400e', justifyContent: 'center' }}
-              onClick={() => onEdit(selectedNode.nodeId)}>
-              <FiEdit2 size={13} /> Edit
-            </button>
-            <button
-              style={{ ...btnBase, flex: 1, background: '#fff1f2', color: '#be123c', justifyContent: 'center' }}
-              onClick={() => onDelete(selectedNode.nodeId)}>
-              <FiTrash2 size={13} /> Delete
-            </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => onEdit(selectedNode.nodeId)} style={{
+              ...base, flex: 1, justifyContent: 'center',
+              background: 'rgba(251,191,36,0.15)', color: '#fbbf24',
+              border: '1px solid rgba(251,191,36,0.3)'
+            }}><FiEdit2 size={13} /> {t.edit}</button>
+            <button onClick={() => onDelete(selectedNode.nodeId)} style={{
+              ...base, flex: 1, justifyContent: 'center',
+              background: 'rgba(248,113,113,0.15)', color: '#f87171',
+              border: '1px solid rgba(248,113,113,0.3)'
+            }}><FiTrash2 size={13} /> {t.delete}</button>
           </div>
         </>
-      )}
-
-      {!selectedNode && nodes.length > 0 && (
-        <div style={{ fontSize: 12, color: '#aaa', textAlign: 'center', padding: '4px 0' }}>
-          Click a node to select
+      ) : nodes.length > 0 ? (
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', textAlign: 'center', padding: '6px 0', fontStyle: 'italic' }}>
+          {t.clickCardToSelect}
         </div>
-      )}
+      ) : null}
 
-      <div style={{ height: 1, background: '#f0e8ff', margin: '2px 0' }} />
+      <div style={{ height: 1, background: 'rgba(107,58,42,0.3)', margin: '4px 0' }} />
 
+      {/* Save */}
       <button
-        style={{ ...btnBase, background: nodes.length === 0 ? '#f0f0f0' : 'linear-gradient(135deg,#6C3FC5,#4c1d95)', color: nodes.length === 0 ? '#bbb' : '#fff', justifyContent: 'center' }}
         disabled={nodes.length === 0 || saving}
-        onClick={onSave}>
-        <FiSave size={14} /> {saving ? 'Saving…' : 'Save Tree'}
+        onClick={onSave}
+        style={{
+          ...base, justifyContent: 'center',
+          background: nodes.length === 0
+            ? 'rgba(255,255,255,0.05)'
+            : 'linear-gradient(135deg,#6C3FC5,#8B5CF6)',
+          color: nodes.length === 0 ? 'rgba(255,255,255,0.2)' : '#fff',
+          border: 'none',
+          boxShadow: nodes.length > 0 ? '0 4px 18px rgba(108,63,197,0.45)' : 'none',
+          fontSize: 14, fontWeight: 700, padding: '12px 14px'
+        }}>
+        <FiSave size={15} /> {saving ? t.savingTree : t.saveTree}
       </button>
     </div>
   );
@@ -217,26 +275,45 @@ function ActionPanel({ selectedNode, nodes, onAdd, onEdit, onDelete, onSave, sav
 
 /* ─── Empty state ──────────────────────────────────────────────── */
 function EmptyTree({ onAddRoot }) {
+  const { t } = useLanguage();
   return (
     <div style={{
-      width: '100%', height: 620,
-      background: 'linear-gradient(135deg,#f5f0ff 0%,#eef2ff 100%)',
-      borderRadius: 16, border: '2px dashed #c4b5fd',
+      width: '100%', height: 680,
+      background: 'linear-gradient(175deg,#050E07 0%,#071A0C 40%,#0A2010 70%,#071A0C 100%)',
+      borderRadius: 22,
+      border: '2px dashed rgba(107,58,42,0.5)',
       display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center', gap: 16
+      alignItems: 'center', justifyContent: 'center', gap: 20,
+      boxShadow: '0 12px 50px rgba(0,0,0,0.6)',
+      position: 'relative', overflow: 'hidden'
     }}>
-      <div style={{ fontSize: 64 }}>👨‍👩‍👧‍👦</div>
-      <h5 style={{ color: '#6C3FC5', fontWeight: 700, margin: 0 }}>Start Your Family Tree</h5>
-      <p style={{ color: '#888', fontSize: 14, margin: 0 }}>Add the first member to begin</p>
-      <button
-        onClick={onAddRoot}
-        style={{
-          background: 'linear-gradient(135deg,#6C3FC5,#4c1d95)', color: '#fff',
-          border: 'none', borderRadius: 12, padding: '12px 28px',
-          fontWeight: 700, fontSize: 15, cursor: 'pointer',
-          boxShadow: '0 4px 18px rgba(108,63,197,0.35)'
-        }}>
-        <FiPlus style={{ marginRight: 8 }} />Add Root Member
+      {/* ambient glows */}
+      <div style={{ position:'absolute', width:400, height:400, borderRadius:'50%', background:'radial-gradient(circle,rgba(46,125,79,0.08),transparent)', top:-100, right:-100, pointerEvents:'none' }} />
+      <div style={{ position:'absolute', width:300, height:300, borderRadius:'50%', background:'radial-gradient(circle,rgba(244,196,48,0.05),transparent)', bottom:-60, left:-60, pointerEvents:'none' }} />
+
+      <div style={{ fontSize: 80, filter: 'drop-shadow(0 6px 20px rgba(46,125,79,0.4))', position:'relative' }}>🌳</div>
+      <div style={{ textAlign:'center', position:'relative' }}>
+        <h4 style={{ color:'#fff', fontWeight:800, margin:'0 0 8px', fontSize:24, letterSpacing:-0.5, textShadow:'0 2px 12px rgba(0,0,0,0.5)' }}>
+          {t.plantFamilyTree}
+        </h4>
+        <p style={{ color:'rgba(255,255,255,0.4)', fontSize:14, margin:0 }}>
+          {t.plantFamilyTreeSub}
+        </p>
+      </div>
+      <button onClick={onAddRoot} style={{
+        background: 'linear-gradient(135deg,#1B4D2E,#2E7D4F)',
+        color: '#fff', border: '2px solid rgba(76,175,122,0.5)',
+        borderRadius: 14, padding: '14px 32px',
+        fontWeight: 700, fontSize: 15,
+        cursor: 'pointer', fontFamily: 'Poppins, sans-serif',
+        boxShadow: '0 6px 24px rgba(46,125,79,0.5)',
+        display:'flex', alignItems:'center', gap:8, position:'relative',
+        transition: 'transform 0.2s, box-shadow 0.2s'
+      }}
+        onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 10px 32px rgba(46,125,79,0.65)'; }}
+        onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 6px 24px rgba(46,125,79,0.5)'; }}
+      >
+        🌱 {t.plantRootAncestor}
       </button>
     </div>
   );
@@ -245,6 +322,7 @@ function EmptyTree({ onAddRoot }) {
 /* ─── Main Page ────────────────────────────────────────────────── */
 export default function FamilyTreeBuilder() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [nodes, setNodes] = useState([]);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [viewMode, setViewMode] = useState(false);
@@ -261,22 +339,27 @@ export default function FamilyTreeBuilder() {
         setNodes(res.data.tree.nodes);
         setViewMode(true);
       }
-    } catch { toast.error('Failed to load family tree'); }
+    } catch { toast.error(t.failedToLoad); }
     finally { setLoading(false); }
   };
 
   const selectedNode = nodes.find(n => n.nodeId === selectedNodeId) || null;
 
   const openAddModal = (type) => {
-    if (type !== 'root' && !selectedNodeId) { toast.error('Select a member first'); return; }
-    const titles = { root: 'Add Root Member', child: 'Add Child', sibling: 'Add Brother / Sister', parent: 'Add Parent' };
+    if (type !== 'root' && !selectedNodeId) { toast.error(t.selectMemberFirst); return; }
+    const titles = {
+      root: t.addRootMember,
+      child: t.addChildModal,
+      sibling: t.addBrotherSister,
+      parent: t.addParentModal
+    };
     setModal({ open: true, title: titles[type], type, editNodeId: null, initialData: null });
   };
 
   const openEditModal = (nodeId) => {
     const n = nodes.find(x => x.nodeId === nodeId);
     if (!n) return;
-    setModal({ open: true, title: 'Edit Member', type: 'edit', editNodeId: nodeId, initialData: { name: n.name, nickname: n.nickname, gender: n.gender } });
+    setModal({ open: true, title: t.editMember, type: 'edit', editNodeId: nodeId, initialData: { name: n.name, nickname: n.nickname, gender: n.gender } });
   };
 
   const closeModal = () => setModal({ open: false, title: '', type: null, editNodeId: null, initialData: null });
@@ -284,23 +367,23 @@ export default function FamilyTreeBuilder() {
   const handleModalSave = (formData) => {
     if (modal.type === 'edit') {
       setNodes(prev => prev.map(n => n.nodeId === modal.editNodeId ? { ...n, ...formData } : n));
-      toast.success('Member updated');
+      toast.success(t.memberUpdated);
     } else if (modal.type === 'root') {
       const n = { nodeId: generateNodeId(), ...formData, parentId: null };
       setNodes(prev => [...prev, n]);
       setSelectedNodeId(n.nodeId);
-      toast.success('Root member added');
+      toast.success(t.rootMemberAdded);
     } else if (modal.type === 'child') {
       const n = { nodeId: generateNodeId(), ...formData, parentId: selectedNodeId };
       setNodes(prev => [...prev, n]);
       setSelectedNodeId(n.nodeId);
-      toast.success('Child added');
+      toast.success(t.childAdded);
     } else if (modal.type === 'sibling') {
       const sel = nodes.find(n => n.nodeId === selectedNodeId);
       const n = { nodeId: generateNodeId(), ...formData, parentId: sel?.parentId || null };
       setNodes(prev => [...prev, n]);
       setSelectedNodeId(n.nodeId);
-      toast.success('Sibling added');
+      toast.success(t.siblingAdded);
     } else if (modal.type === 'parent') {
       const n = { nodeId: generateNodeId(), ...formData, parentId: null };
       setNodes(prev => {
@@ -308,7 +391,7 @@ export default function FamilyTreeBuilder() {
         return [n, ...updated];
       });
       setSelectedNodeId(n.nodeId);
-      toast.success('Parent added');
+      toast.success(t.parentAdded);
     }
     closeModal();
   };
@@ -318,23 +401,23 @@ export default function FamilyTreeBuilder() {
     const count = (id) => nodes.forEach(n => { if (n.parentId === id) { descendants.push(n); count(n.nodeId); } });
     count(nodeId);
     const msg = descendants.length > 0
-      ? `This will also delete ${descendants.length} descendant(s). Are you sure?`
-      : 'Delete this member?';
+      ? t.deleteWithDescendants(descendants.length)
+      : t.deleteMember;
     if (window.confirm(msg)) {
       setNodes(prev => deleteNodeAndDescendants(prev, nodeId));
       if (selectedNodeId === nodeId) setSelectedNodeId(null);
-      toast.success('Member deleted');
+      toast.success(t.memberDeleted);
     }
   };
 
   const handleSave = async () => {
-    if (!nodes.length) { toast.error('Add at least one member'); return; }
+    if (!nodes.length) { toast.error(t.addAtLeastOneMember); return; }
     setSaving(true);
     try {
       await api.post('/api/family-tree', { nodes });
-      toast.success('Family tree saved!');
+      toast.success(t.familyTreeSaved);
       setViewMode(true);
-    } catch { toast.error('Failed to save'); }
+    } catch { toast.error(t.failedToSave); }
     finally { setSaving(false); }
   };
 
@@ -360,21 +443,23 @@ export default function FamilyTreeBuilder() {
             <div className="d-flex align-items-center gap-3">
               <button className="btn btn-sm btn-outline-light d-flex align-items-center gap-1"
                 onClick={() => navigate('/dashboard')}>
-                <FiArrowLeft /> Back
+                <FiArrowLeft /> {t.back}
               </button>
               <div>
                 <h2 className="mb-0">
                   <FiGitMerge className="me-2" style={{ color: '#F4C430' }} />
-                  Family Tree Builder
+                  {t.familyTreeBuilder}
                 </h2>
-                <small style={{ opacity: 0.8 }}>{nodes.length} member{nodes.length !== 1 ? 's' : ''}</small>
+                <small style={{ opacity: 0.8 }}>
+                  {nodes.length} {nodes.length !== 1 ? t.members : t.member}
+                </small>
               </div>
             </div>
 
             {viewMode && (
               <button className="btn btn-warning fw-semibold d-flex align-items-center gap-2"
                 style={{ borderRadius: 10 }} onClick={() => setViewMode(false)}>
-                <FiEdit2 /> Edit Tree
+                <FiEdit2 /> {t.editTree}
               </button>
             )}
           </div>
@@ -385,12 +470,12 @@ export default function FamilyTreeBuilder() {
 
         {/* Legend */}
         <div className="d-flex align-items-center gap-3 mb-3 flex-wrap" style={{ fontSize: 12, color: '#888' }}>
-          <span><span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: '#6C3FC5', marginRight: 5 }}></span>Root</span>
-          <span><span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: '#3b82f6', marginRight: 5 }}></span>Male</span>
-          <span><span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: '#ec4899', marginRight: 5 }}></span>Female</span>
+          <span><span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: '#6C3FC5', marginRight: 5 }}></span>{t.rootLegend}</span>
+          <span><span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: '#3b82f6', marginRight: 5 }}></span>{t.male}</span>
+          <span><span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: '#ec4899', marginRight: 5 }}></span>{t.female}</span>
           {!viewMode && nodes.length > 0 && (
             <span style={{ marginLeft: 'auto', color: '#6C3FC5', fontWeight: 600 }}>
-              Click any node to select it
+              {t.clickNodeToSelect}
             </span>
           )}
         </div>
