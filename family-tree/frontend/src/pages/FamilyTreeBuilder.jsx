@@ -394,6 +394,7 @@ export default function FamilyTreeBuilder() {
       const n = { nodeId: generateNodeId(), ...formData, parentId: null };
       setNodes(prev => [...prev, n]);
       setSelectedNodeId(n.nodeId);
+      setViewMode(false); // switch to edit mode so user can build from the new root
       toast.success(t.rootMemberAdded);
     } else if (modal.type === 'child') {
       const n = { nodeId: generateNodeId(), ...formData, parentId: selectedNodeId };
@@ -478,12 +479,33 @@ export default function FamilyTreeBuilder() {
               </div>
             </div>
 
-            {viewMode && (
-              <button className="btn btn-warning fw-semibold d-flex align-items-center gap-2"
-                style={{ borderRadius: 10 }} onClick={() => setViewMode(false)}>
-                <FiEdit2 /> {t.editTree}
-              </button>
-            )}
+            <div className="d-flex gap-2">
+              {nodes.length > 0 && (
+                <button
+                  className="btn btn-sm fw-semibold d-flex align-items-center gap-2"
+                  style={{
+                    borderRadius: 10,
+                    background: 'linear-gradient(135deg,#1B4D2E,#2E7D4F)',
+                    color: '#fff',
+                    border: '1.5px solid rgba(76,175,122,0.5)',
+                    boxShadow: '0 4px 14px rgba(46,125,79,0.4)',
+                    padding: '7px 14px'
+                  }}
+                  onClick={() => {
+                    setViewMode(false);
+                    setModal({ open: true, title: t.addRootMember, type: 'root', editNodeId: null, initialData: null });
+                  }}
+                >
+                  🌱 {t.addNewRoot}
+                </button>
+              )}
+              {viewMode && (
+                <button className="btn btn-warning fw-semibold d-flex align-items-center gap-2"
+                  style={{ borderRadius: 10 }} onClick={() => setViewMode(false)}>
+                  <FiEdit2 /> {t.editTree}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

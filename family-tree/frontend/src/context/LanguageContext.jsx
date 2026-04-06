@@ -94,6 +94,7 @@ const translations = {
     members: 'members',
     member: 'member',
     editTree: 'Edit Tree',
+    addNewRoot: 'Add New Root',
     rootLegend: 'Root',
     clickNodeToSelect: 'Click any node to select it',
 
@@ -262,6 +263,7 @@ const translations = {
     members: 'સભ્યો',
     member: 'સભ્ય',
     editTree: 'વૃક્ષ સંપાદિત કરો',
+    addNewRoot: 'નવો મૂળ ઉમેરો',
     rootLegend: 'મૂળ',
     clickNodeToSelect: 'પસંદ કરવા માટે કોઈ નોડ પર ક્લિક કરો',
 
