@@ -8,6 +8,8 @@ import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
 import UserDetail from './pages/UserDetail';
 import FamilyTrees from './pages/FamilyTrees';
+import Kuldevi from './pages/Kuldevi';
+import CommonTree from './pages/CommonTree';
 
 function App() {
   return (
@@ -52,6 +54,26 @@ function App() {
             <PrivateRoute>
               <Layout>
                 <FamilyTrees />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/kuldevi"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Kuldevi />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/common-tree"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <CommonTree />
               </Layout>
             </PrivateRoute>
           }

@@ -61,8 +61,8 @@ function Dashboard() {
           <div className="welcome-hero mb-4">
             <div className="d-flex justify-content-between align-items-start flex-wrap gap-3">
               <div>
-                <h2 className="fw-bold mb-1">
-                  {t.welcomeBack} {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.email}!
+                <h2 className="fw-bold mb-1 family-title-gujarati" style={{ fontSize: 28 }}>
+                  લુહાર ડોડીયા પરીવાર
                 </h2>
                 <p style={{ opacity: 0.85, margin: 0 }}>
                   {t.dashboardSubtitle}

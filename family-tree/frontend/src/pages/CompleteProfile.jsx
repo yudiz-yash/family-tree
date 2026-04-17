@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { FiUser, FiMapPin, FiPhone, FiStar } from 'react-icons/fi';
@@ -17,8 +17,13 @@ function CompleteProfile() {
     surapura: '',
     contactNumber: ''
   });
+  const [kuldeviOptions, setKuldeviOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    api.get('/api/kuldevi').then(res => setKuldeviOptions(res.data.kuldevis)).catch(() => {});
+  }, []);
 
   const validate = () => {
     const errs = {};
@@ -118,13 +123,16 @@ function CompleteProfile() {
               <FiStar size={14} className="me-1" style={{ color: '#6C3FC5' }} />
               {t.kuldeviName}
             </label>
-            <input
-              type="text"
+            <select
               className={`form-control ${errors.kuldeviName ? 'is-invalid' : ''}`}
-              placeholder={t.kuldeviPlaceholder}
               value={form.kuldeviName}
               onChange={(e) => setForm({ ...form, kuldeviName: e.target.value })}
-            />
+            >
+              <option value="">{t.kuldeviPlaceholder}</option>
+              {kuldeviOptions.map(k => (
+                <option key={k._id} value={k.name}>{k.name}</option>
+              ))}
+            </select>
             {errors.kuldeviName && <div className="invalid-feedback">{errors.kuldeviName}</div>}
           </div>
 

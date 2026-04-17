@@ -7,13 +7,17 @@ import {
   FiLogOut,
   FiMenu,
   FiX,
-  FiChevronRight
+  FiChevronRight,
+  FiStar,
+  FiShare2
 } from 'react-icons/fi';
 
 const navItems = [
   { to: '/dashboard', icon: FiGrid, label: 'Dashboard' },
   { to: '/users', icon: FiUsers, label: 'Users' },
-  { to: '/family-trees', icon: FiGitMerge, label: 'Family Trees' }
+  { to: '/family-trees', icon: FiGitMerge, label: 'Family Trees' },
+  { to: '/kuldevi', icon: FiStar, label: 'Madh / Kuldevi' },
+  { to: '/common-tree', icon: FiShare2, label: 'Common Tree' }
 ];
 
 function Layout({ children }) {

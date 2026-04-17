@@ -6,8 +6,6 @@ import ReactFlow, {
   MiniMap,
   Handle,
   Position,
-  useNodesState,
-  useEdgesState,
   MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -45,7 +43,8 @@ function computeLayout(nodes) {
     positions[id] = { x, y };
     const kids = childrenMap[id] || [];
     if (!kids.length) return;
-    const total = kids.reduce((s, k) => s + subtreeWidth(k), 0) + H_GAP * (kids.length - 1);
+    const total =
+      kids.reduce((s, k) => s + subtreeWidth(k), 0) + H_GAP * (kids.length - 1);
     let cx = x - total / 2 + NODE_WIDTH / 2;
     kids.forEach((k) => {
       const w = subtreeWidth(k);
@@ -54,7 +53,8 @@ function computeLayout(nodes) {
     });
   }
 
-  const rootTotalW = roots.reduce((s, r) => s + subtreeWidth(r), 0) + H_GAP * (roots.length - 1);
+  const rootTotalW =
+    roots.reduce((s, r) => s + subtreeWidth(r), 0) + H_GAP * (roots.length - 1);
   let rx = -rootTotalW / 2 + NODE_WIDTH / 2;
   roots.forEach((r) => {
     const w = subtreeWidth(r);
@@ -81,7 +81,12 @@ function computeLayout(nodes) {
       sourceHandle: 'bottom',
       targetHandle: 'top',
       type: 'smoothstep',
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#a78bfa', width: 16, height: 16 },
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        color: '#a78bfa',
+        width: 16,
+        height: 16
+      },
       style: { stroke: '#a78bfa', strokeWidth: 2.5 }
     }));
 
@@ -93,11 +98,13 @@ const genderStyle = {
   female: { bg: 'linear-gradient(135deg,#ec4899,#be185d)', border: '#f9a8d4', icon: '♀' },
   other:  { bg: 'linear-gradient(135deg,#8b5cf6,#5b21b6)', border: '#c4b5fd', icon: '⚧' }
 };
-const rootStyle = { bg: 'linear-gradient(135deg,#6C3FC5,#4c1d95)', border: '#F4C430' };
+const rootBg = 'linear-gradient(135deg,#6C3FC5,#4c1d95)';
 
 function PersonNode({ data }) {
   const { node, isRoot } = data;
-  const gs = isRoot ? rootStyle : (genderStyle[node.gender] || genderStyle.male);
+  const gs = genderStyle[node.gender] || genderStyle.male;
+  const bg = isRoot ? rootBg : gs.bg;
+  const border = isRoot ? '#F4C430' : gs.border;
 
   return (
     <>
@@ -111,8 +118,8 @@ function PersonNode({ data }) {
       <div style={{
         width: NODE_WIDTH,
         minHeight: NODE_HEIGHT,
-        background: gs.bg,
-        border: `2.5px solid ${gs.border}`,
+        background: bg,
+        border: `2.5px solid ${border}`,
         borderRadius: 16,
         boxShadow: isRoot
           ? '0 8px 30px rgba(108,63,197,0.45)'
@@ -128,9 +135,12 @@ function PersonNode({ data }) {
       }}>
         {isRoot && (
           <div style={{
-            position: 'absolute', top: -11, left: '50%', transform: 'translateX(-50%)',
-            background: '#F4C430', color: '#1a1a2e', fontSize: 9, fontWeight: 800,
-            padding: '2px 10px', borderRadius: 20, letterSpacing: 1, whiteSpace: 'nowrap'
+            position: 'absolute', top: -11, left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#F4C430', color: '#1a1a2e',
+            fontSize: 9, fontWeight: 800,
+            padding: '2px 10px', borderRadius: 20,
+            letterSpacing: 1, whiteSpace: 'nowrap'
           }}>ROOT</div>
         )}
 
@@ -138,7 +148,8 @@ function PersonNode({ data }) {
           width: 40, height: 40, borderRadius: '50%',
           background: 'rgba(255,255,255,0.22)',
           border: '2px solid rgba(255,255,255,0.5)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          display: 'flex', alignItems: 'center',
+          justifyContent: 'center',
           fontSize: 20, marginBottom: 8, flexShrink: 0
         }}>
           {gs.icon}
@@ -177,22 +188,20 @@ const nodeTypes = { person: PersonNode };
 
 function Inner({ nodes }) {
   const { flowNodes, flowEdges } = useMemo(() => computeLayout(nodes), [nodes]);
-  const [rfNodes, , onNodesChange] = useNodesState(flowNodes);
-  const [rfEdges, , onEdgesChange] = useEdgesState(flowEdges);
 
   return (
     <div style={{
-      width: '100%', height: 600,
+      width: '100%',
+      height: 600,
       background: 'linear-gradient(135deg,#f5f0ff 0%,#eef2ff 100%)',
-      borderRadius: 16, overflow: 'hidden',
+      borderRadius: 16,
+      overflow: 'hidden',
       border: '1px solid #e0d7f8',
       boxShadow: '0 4px 24px rgba(108,63,197,0.1)'
     }}>
       <ReactFlow
-        nodes={rfNodes}
-        edges={rfEdges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        nodes={flowNodes}
+        edges={flowEdges}
         nodeTypes={nodeTypes}
         fitView
         fitViewOptions={{ padding: 0.25 }}
@@ -202,12 +211,22 @@ function Inner({ nodes }) {
         nodesDraggable={false}
         nodesConnectable={false}
         elementsSelectable={false}
+        proOptions={{ hideAttribution: false }}
       >
         <Background color="#c4b5fd" gap={28} size={1} style={{ opacity: 0.35 }} />
-        <Controls style={{ background: '#fff', border: '1px solid #e0d7f8', borderRadius: 10 }} />
+        <Controls style={{
+          background: '#fff',
+          border: '1px solid #e0d7f8',
+          borderRadius: 10,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        }} />
         <MiniMap
           nodeColor={() => '#6C3FC5'}
-          style={{ background: '#fff', border: '1px solid #e0d7f8', borderRadius: 10 }}
+          style={{
+            background: '#fff',
+            border: '1px solid #e0d7f8',
+            borderRadius: 10
+          }}
         />
       </ReactFlow>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
@@ -346,6 +346,7 @@ export default function FamilyTreeBuilder() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [nodes, setNodes] = useState([]);
+  const [commonNodes, setCommonNodes] = useState([]);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [viewMode, setViewMode] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -356,14 +357,51 @@ export default function FamilyTreeBuilder() {
 
   const fetchTree = async () => {
     try {
-      const res = await api.get('/api/family-tree');
-      if (res.data.tree?.nodes?.length) {
-        setNodes(res.data.tree.nodes);
+      const [treeRes, commonRes] = await Promise.all([
+        api.get('/api/family-tree'),
+        api.get('/api/common-tree').catch(() => ({ data: { tree: null } }))
+      ]);
+      if (treeRes.data.tree?.nodes?.length) {
+        setNodes(treeRes.data.tree.nodes);
         setViewMode(true);
+      }
+      if (commonRes.data.tree?.nodes?.length) {
+        setCommonNodes(commonRes.data.tree.nodes);
       }
     } catch { toast.error(t.failedToLoad); }
     finally { setLoading(false); }
   };
+
+  /* Merge common tree + user tree for display only */
+  const mergedNodes = useMemo(() => {
+    if (!commonNodes.length) return nodes;
+    // Prefix common node IDs to avoid collision
+    const prefixed = commonNodes.map(n => ({
+      ...n,
+      nodeId: `common_${n.nodeId}`,
+      parentId: n.parentId ? `common_${n.parentId}` : null,
+      isCommon: true
+    }));
+    // Find the deepest leaf of the common tree (connection point)
+    const childMap = {};
+    prefixed.forEach(n => { childMap[n.nodeId] = []; });
+    prefixed.forEach(n => { if (n.parentId && childMap[n.parentId]) childMap[n.parentId].push(n.nodeId); });
+    const depth = {};
+    const roots = prefixed.filter(n => !n.parentId);
+    const sd = (id, d) => { depth[id] = d; (childMap[id] || []).forEach(k => sd(k, d + 1)); };
+    roots.forEach(r => sd(r.nodeId, 0));
+    const leaves = prefixed.filter(n => !childMap[n.nodeId]?.length);
+    if (!leaves.length) return nodes;
+    const connectionNode = leaves.reduce((a, b) => (depth[a.nodeId] || 0) >= (depth[b.nodeId] || 0) ? a : b);
+    // Attach user tree roots to the connection node
+    const userRootIds = nodes
+      .filter(n => !n.parentId || !nodes.find(x => x.nodeId === n.parentId))
+      .map(n => n.nodeId);
+    const attachedUserNodes = nodes.map(n =>
+      userRootIds.includes(n.nodeId) ? { ...n, parentId: connectionNode.nodeId } : n
+    );
+    return [...prefixed, ...attachedUserNodes];
+  }, [nodes, commonNodes]);
 
   const selectedNode = nodes.find(n => n.nodeId === selectedNodeId) || null;
 
@@ -475,6 +513,7 @@ export default function FamilyTreeBuilder() {
                 </h2>
                 <small style={{ opacity: 0.8 }}>
                   {nodes.length} {nodes.length !== 1 ? t.members : t.member}
+                  {commonNodes.length > 0 && <span style={{ marginLeft: 8, color: '#c4b5fd', fontSize: 11 }}>+ {commonNodes.length} common</span>}
                 </small>
               </div>
             </div>
@@ -526,7 +565,7 @@ export default function FamilyTreeBuilder() {
 
         {viewMode ? (
           /* ── VIEW MODE ── */
-          <FamilyTreeFlow nodes={nodes} editMode={false} />
+          <FamilyTreeFlow nodes={mergedNodes} editMode={false} />
         ) : (
           /* ── EDIT MODE ── */
           <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>

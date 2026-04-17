@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiMail, FiLock, FiGitMerge } from 'react-icons/fi';
+import { FiMail, FiLock } from 'react-icons/fi';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import LangSwitcher from '../components/LangSwitcher';
+import logo from '../../public/logo.png';
 
 function Login() {
   const navigate = useNavigate();
@@ -54,7 +55,8 @@ function Login() {
       <LangSwitcher />
       <div className="auth-card">
         <div className="auth-logo">
-          <FiGitMerge size={48} color="#6C3FC5" />
+          <img src={logo} alt="logo" className="auth-logo-img" />
+          <h2 className="family-title-gujarati">લુહાર ડોડીયા પરીવાર એકતા ગ્રુપ</h2>
           <h1>{t.brandName}</h1>
           <p>{t.signInTitle}</p>
         </div>

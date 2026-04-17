@@ -17,12 +17,14 @@ function EditProfile() {
     surapura: '',
     contactNumber: ''
   });
+  const [kuldeviOptions, setKuldeviOptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     fetchProfile();
+    api.get('/api/kuldevi').then(res => setKuldeviOptions(res.data.kuldevis)).catch(() => {});
   }, []);
 
   const fetchProfile = async () => {
@@ -218,15 +220,18 @@ function EditProfile() {
                 <span style={{ fontSize: 15 }}>🕉️</span>
                 {t.kuldeviName}
               </label>
-              <input
-                type="text"
+              <select
                 value={form.kuldeviName}
                 onChange={e => setForm({ ...form, kuldeviName: e.target.value })}
-                placeholder={t.kuldeviPlaceholder}
                 style={inputStyle(errors.kuldeviName)}
                 onFocus={e => e.target.style.borderColor = '#6C3FC5'}
                 onBlur={e => e.target.style.borderColor = errors.kuldeviName ? '#ef4444' : '#e8e0f5'}
-              />
+              >
+                <option value="">{t.kuldeviPlaceholder}</option>
+                {kuldeviOptions.map(k => (
+                  <option key={k._id} value={k.name}>{k.name}</option>
+                ))}
+              </select>
               {errors.kuldeviName && <div style={{ color: '#ef4444', fontSize: 12, marginTop: 4 }}>{errors.kuldeviName}</div>}
             </div>
 
