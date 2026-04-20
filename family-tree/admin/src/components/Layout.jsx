@@ -11,6 +11,7 @@ import {
   FiStar,
   FiShare2
 } from 'react-icons/fi';
+import logo from '/logo.png';
 
 const navItems = [
   { to: '/dashboard', icon: FiGrid, label: 'Dashboard' },
@@ -36,7 +37,7 @@ function Layout({ children }) {
       {/* Sidebar */}
       <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-brand">
-          <FiGitMerge size={26} className="brand-icon" />
+          <img src={logo} alt="logo" style={{ width: 38, height: 38, objectFit: 'contain' }} />
           <span>FamilyTree</span>
           <button className="sidebar-close-btn" onClick={() => setSidebarOpen(false)}>
             <FiX />
@@ -84,7 +85,10 @@ function Layout({ children }) {
           <button className="topbar-menu-btn" onClick={() => setSidebarOpen(true)}>
             <FiMenu size={22} />
           </button>
-          <div className="topbar-title">Family Tree Admin</div>
+          <div className="topbar-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <img src={logo} alt="logo" style={{ width: 32, height: 32, objectFit: 'contain' }} />
+            Family Tree Admin
+          </div>
           <div className="topbar-actions">
             <div className="topbar-badge">
               <span>Admin</span>

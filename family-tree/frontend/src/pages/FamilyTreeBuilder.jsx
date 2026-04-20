@@ -127,7 +127,6 @@ function NodeModal({ open, onClose, onSave, title, initialData }) {
             {[
               { val: 'male',   icon: '♂', label: t.genderMale,   ac: '#3b82f6', bg: 'rgba(59,130,246,0.15)' },
               { val: 'female', icon: '♀', label: t.genderFemale, ac: '#ec4899', bg: 'rgba(236,72,153,0.15)' },
-              { val: 'other',  icon: '⚧', label: t.genderOther,  ac: '#8b5cf6', bg: 'rgba(139,92,246,0.15)' },
             ].map(g => (
               <div key={g.val} onClick={() => setForm({ ...form, gender: g.val })} style={{
                 flex: 1, padding: '12px 8px', borderRadius: 12, textAlign: 'center',

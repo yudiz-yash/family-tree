@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiLogOut, FiUser, FiGitMerge, FiGlobe } from 'react-icons/fi';
+import { FiLogOut, FiUser, FiGlobe } from 'react-icons/fi';
 import { useLanguage } from '../context/LanguageContext';
+const logo = '/logo.png';
 
 function Navbar() {
   const navigate = useNavigate();
@@ -16,35 +17,36 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark" style={{ background: 'linear-gradient(135deg, #6C3FC5, #4a2d8a)' }}>
+    <nav className="navbar navbar-expand-lg" style={{ background: '#fff', borderBottom: '2px solid #ede9f8', boxShadow: '0 2px 12px rgba(108,63,197,0.08)' }}>
       <div className="container">
         <Link className="navbar-brand d-flex align-items-center gap-2" to="/dashboard">
-          <FiGitMerge size={24} style={{ color: '#F4C430' }} />
-          <span className="fw-bold">{t.brandName}</span>
+          <img src={logo} alt="logo" style={{ width: 70, height: 70, objectFit: 'contain' }} />
+          <span className="fw-bold" style={{ color: '#6C3FC5' }}>{t.brandName}</span>
         </Link>
         <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
+          style={{ borderColor: '#6C3FC5' }}
         >
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon" style={{ filter: 'invert(30%) sepia(80%) saturate(500%) hue-rotate(230deg)' }}></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto align-items-center gap-2">
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center gap-1" to="/dashboard">
+              <Link className="nav-link d-flex align-items-center gap-1" style={{ color: '#4a2d8a', fontWeight: 500 }} to="/dashboard">
                 {t.navDashboard}
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link d-flex align-items-center gap-1" to="/family-tree">
+              <Link className="nav-link d-flex align-items-center gap-1" style={{ color: '#4a2d8a', fontWeight: 500 }} to="/family-tree">
                 {t.navFamilyTree}
               </Link>
             </li>
             {user && (
               <li className="nav-item">
-                <span className="nav-link d-flex align-items-center gap-1" style={{ color: '#F4C430' }}>
+                <span className="nav-link d-flex align-items-center gap-1" style={{ color: '#6C3FC5', fontWeight: 600 }}>
                   <FiUser size={16} />
                   {user.firstName || user.email}
                 </span>
@@ -54,15 +56,15 @@ function Navbar() {
             {/* Language switcher */}
             <li className="nav-item d-flex align-items-center">
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <FiGlobe size={15} style={{ color: 'rgba(255,255,255,0.7)', flexShrink: 0 }} />
+                <FiGlobe size={15} style={{ color: '#6C3FC5', flexShrink: 0 }} />
                 <select
                   value={lang}
                   onChange={e => switchLang(e.target.value)}
                   style={{
-                    background: 'rgba(255,255,255,0.12)',
-                    border: '1px solid rgba(255,255,255,0.25)',
+                    background: '#f4f0ff',
+                    border: '1px solid #c4b5f0',
                     borderRadius: 8,
-                    color: '#fff',
+                    color: '#4a2d8a',
                     fontSize: 13,
                     fontWeight: 600,
                     padding: '5px 10px',
@@ -74,19 +76,20 @@ function Navbar() {
                     paddingRight: 28,
                   }}
                 >
-                  <option value="gu" style={{ background: '#4a2d8a', color: '#fff' }}>{t.gujarati}</option>
-                  <option value="en" style={{ background: '#4a2d8a', color: '#fff' }}>{t.english}</option>
+                  <option value="gu">{t.gujarati}</option>
+                  <option value="en">{t.english}</option>
                 </select>
                 <span style={{
                   position: 'absolute', right: 8, pointerEvents: 'none',
-                  color: 'rgba(255,255,255,0.7)', fontSize: 10
+                  color: '#6C3FC5', fontSize: 10
                 }}>▼</span>
               </div>
             </li>
 
             <li className="nav-item">
               <button
-                className="btn btn-sm btn-outline-warning d-flex align-items-center gap-1"
+                className="btn btn-sm d-flex align-items-center gap-1"
+                style={{ background: '#6C3FC5', color: '#fff', border: 'none', borderRadius: 8 }}
                 onClick={handleLogout}
               >
                 <FiLogOut size={16} />

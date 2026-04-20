@@ -5,7 +5,7 @@ import { FiMail, FiLock } from 'react-icons/fi';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import LangSwitcher from '../components/LangSwitcher';
-import logo from '../../public/logo.png';
+const logo = '/logo.png';
 
 function Login() {
   const navigate = useNavigate();

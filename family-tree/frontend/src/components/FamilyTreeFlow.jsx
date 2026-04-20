@@ -131,19 +131,104 @@ const LEAF = {
 };
 const ROOT_LEAF = { bg: ['#5D3A00','#8B5E00'], border: '#F4C430', glow: 'rgba(244,196,48,0.6)', icon: '🌳' };
 
+/* Common tree uses a distinct navy/cosmic palette */
+const COMMON_LEAF = {
+  male:   { bg: ['#0F1B2D','#1E3A5F'], border: '#60A5FA', glow: 'rgba(96,165,250,0.5)',  icon: '🔵', label: 'Male'   },
+  female: { bg: ['#1F0A2D','#3D1563'], border: '#C084FC', glow: 'rgba(192,132,252,0.5)', icon: '🟣', label: 'Female' },
+  other:  { bg: ['#0F2020','#1A3C3C'], border: '#34D399', glow: 'rgba(52,211,153,0.5)',  icon: '🔷', label: 'Other'  },
+};
+const COMMON_ROOT_LEAF = { bg: ['#0A1628','#1A3060'], border: '#F59E0B', glow: 'rgba(245,158,11,0.6)', icon: '🌐' };
+
 function initials(name = '') {
   return name.trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('') || '?';
 }
 
 /* ─── leaf node ───────────────────────────────────────────────── */
+const HEX_CLIP = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
+
 function LeafNode({ data }) {
   const { node, isRoot, isSelected, editMode, depth, isCommon } = data;
-  const p    = isRoot ? ROOT_LEAF : (LEAF[node.gender] || LEAF.male);
+  const p = isCommon
+    ? (isRoot ? COMMON_ROOT_LEAF : (COMMON_LEAF[node.gender] || COMMON_LEAF.male))
+    : (isRoot ? ROOT_LEAF : (LEAF[node.gender] || LEAF.male));
   const [c1, c2] = p.bg;
 
+  /* ── COMMON TREE NODE → hexagon shape ── */
+  if (isCommon) {
+    return (
+      <>
+        <Handle type="target" id="top" position={Position.Top}
+          style={{ background: 'transparent', border: 'none', width: 1, height: 1, top: 0, opacity: 0 }} />
+
+        {/* drop-shadow follows the clip-path outline → acts as glowing border */}
+        <div style={{
+          width: NODE_W,
+          filter: `drop-shadow(0 0 5px ${p.border}) drop-shadow(0 0 14px ${p.glow})`,
+        }}>
+          <div style={{
+            width: NODE_W,
+            background: `linear-gradient(160deg, ${c1} 0%, ${c2} 100%)`,
+            clipPath: HEX_CLIP,
+            padding: '30px 18px 28px',
+            color: '#fff',
+            textAlign: 'center',
+            cursor: 'default',
+          }}>
+            {/* label row */}
+            <div style={{ fontSize: 8, fontWeight: 800, letterSpacing: 1.2, marginBottom: 4,
+              color: p.border, textTransform: 'uppercase' }}>
+              {isRoot ? '🌐 Common Root' : '◈ Common'}
+            </div>
+
+            {/* Avatar */}
+            <div style={{
+              width: 36, height: 36, borderRadius: '50%',
+              background: 'rgba(0,0,0,0.35)',
+              border: `2px solid ${p.border}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 6px',
+              fontSize: 13, fontWeight: 800, color: '#fff',
+              boxShadow: `inset 0 2px 6px rgba(0,0,0,0.4), 0 0 8px ${p.glow}`,
+            }}>
+              {initials(node.name)}
+            </div>
+
+            {/* Name */}
+            <div style={{
+              fontWeight: 700, fontSize: 12, lineHeight: 1.3,
+              wordBreak: 'break-word', marginBottom: 3,
+              textShadow: '0 1px 4px rgba(0,0,0,0.6)',
+            }}>
+              {node.name}
+            </div>
+
+            {/* Nickname */}
+            {node.nickname && (
+              <div style={{ fontSize: 9.5, opacity: 0.6, fontStyle: 'italic', marginBottom: 3 }}>
+                "{node.nickname}"
+              </div>
+            )}
+
+            {/* Gender */}
+            <div style={{
+              fontSize: 8.5, fontWeight: 700, textTransform: 'uppercase',
+              letterSpacing: 0.8, color: p.border, opacity: 0.9,
+            }}>
+              {p.icon} {p.label}
+            </div>
+          </div>
+        </div>
+
+        <Handle type="source" id="bottom" position={Position.Bottom}
+          style={{ background: 'transparent', border: 'none', width: 1, height: 1, bottom: 0, opacity: 0 }} />
+      </>
+    );
+  }
+
+  /* ── REGULAR TREE NODE → rounded rectangle ── */
   return (
     <>
-      {/* top connector stub (visual branch joining point) */}
+      {/* top connector stub */}
       {!isRoot && (
         <div style={{
           position: 'absolute', top: -12, left: '50%',
@@ -161,7 +246,7 @@ function LeafNode({ data }) {
       <div style={{
         width: NODE_W,
         background: `linear-gradient(160deg, ${c1} 0%, ${c2} 100%)`,
-        borderRadius: isRoot ? '14px 14px 14px 14px' : 12,
+        borderRadius: isRoot ? 14 : 12,
         padding: '14px 12px 12px',
         color: '#fff',
         textAlign: 'center',
@@ -177,7 +262,7 @@ function LeafNode({ data }) {
       }}>
 
         {/* Root badge */}
-        {isRoot && !isCommon && (
+        {isRoot && (
           <div style={{
             position: 'absolute', top: -11, left: '50%', transform: 'translateX(-50%)',
             background: 'linear-gradient(90deg,#F4C430,#D4A017)',
@@ -186,26 +271,6 @@ function LeafNode({ data }) {
             letterSpacing: 1.5, whiteSpace: 'nowrap',
             boxShadow: '0 2px 8px rgba(244,196,48,0.5)'
           }}>🌳 ANCESTOR</div>
-        )}
-        {/* Common tree root badge */}
-        {isRoot && isCommon && (
-          <div style={{
-            position: 'absolute', top: -11, left: '50%', transform: 'translateX(-50%)',
-            background: 'linear-gradient(90deg,#6C3FC5,#8B5CF6)',
-            color: '#fff', fontSize: 9, fontWeight: 800,
-            padding: '2px 12px', borderRadius: 20,
-            letterSpacing: 1.5, whiteSpace: 'nowrap',
-            boxShadow: '0 2px 8px rgba(108,63,197,0.5)'
-          }}>🌍 COMMON ROOT</div>
-        )}
-        {/* Common node badge (non-root) */}
-        {!isRoot && isCommon && (
-          <div style={{
-            position: 'absolute', top: -10, left: 6,
-            background: 'rgba(108,63,197,0.8)',
-            color: '#fff', fontSize: 8, fontWeight: 800,
-            padding: '2px 8px', borderRadius: 20, letterSpacing: 1
-          }}>COMMON</div>
         )}
 
         {/* Selected badge */}
@@ -390,6 +455,7 @@ function Inner({ nodes, selectedId, editMode, onNodeSelect }) {
           { color: '#F4C430', label: 'Root' },
           { color: '#2E7D4F', label: 'Male' },
           { color: '#B5294E', label: 'Female' },
+          { color: '#60A5FA', label: 'Common' },
         ].map(l => (
           <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
             <div style={{ width: 8, height: 8, borderRadius: '50%', background: l.color, boxShadow: `0 0 4px ${l.color}` }} />
