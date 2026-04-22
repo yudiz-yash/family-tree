@@ -78,7 +78,7 @@ function Login() {
                 type="email"
                 className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                 style={{ borderLeft: 'none' }}
-                placeholder="admin@familytree.com"
+                placeholder="Enter your email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
               />
@@ -98,7 +98,7 @@ function Login() {
                 type="password"
                 className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                 style={{ borderLeft: 'none' }}
-                placeholder="Admin password"
+                placeholder="Enter your password"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
