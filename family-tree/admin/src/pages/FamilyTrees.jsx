@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiGitMerge, FiSearch, FiEye } from 'react-icons/fi';
+import { FiGitMerge, FiSearch, FiEye, FiTrash2 } from 'react-icons/fi';
 import api from '../api/axios';
 
 function FamilyTrees() {
@@ -33,6 +33,18 @@ function FamilyTrees() {
       month: 'short',
       year: 'numeric'
     });
+  };
+
+  const handleDeleteTree = async (e, treeId) => {
+    e.stopPropagation();
+    if (!window.confirm('Permanently delete this family tree? This cannot be undone.')) return;
+    try {
+      await api.delete(`/api/admin/family-trees/${treeId}`);
+      setTrees(prev => prev.filter(t => t._id !== treeId));
+      toast.success('Tree deleted');
+    } catch {
+      toast.error('Failed to delete tree');
+    }
   };
 
   const filtered = trees.filter((t) => {
@@ -135,24 +147,33 @@ function FamilyTrees() {
                     <td style={{ color: '#64748b' }}>{formatDate(tree.createdAt)}</td>
                     <td style={{ color: '#64748b' }}>{formatDate(tree.updatedAt)}</td>
                     <td>
-                      <button
-                        className="btn btn-sm d-inline-flex align-items-center gap-1"
-                        style={{
-                          background: '#ede9fe',
-                          color: '#6C3FC5',
-                          border: 'none',
-                          borderRadius: 8,
-                          padding: '5px 10px',
-                          fontSize: 12,
-                          fontWeight: 600
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (tree.userId?._id) navigate(`/users/${tree.userId._id}`);
-                        }}
-                      >
-                        <FiEye size={13} /> View
-                      </button>
+                      <div className="d-flex gap-2">
+                        <button
+                          className="btn btn-sm d-inline-flex align-items-center gap-1"
+                          style={{
+                            background: '#ede9fe',
+                            color: '#6C3FC5',
+                            border: 'none',
+                            borderRadius: 8,
+                            padding: '5px 10px',
+                            fontSize: 12,
+                            fontWeight: 600
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (tree.userId?._id) navigate(`/users/${tree.userId._id}`);
+                          }}
+                        >
+                          <FiEye size={13} /> View
+                        </button>
+                        <button
+                          className="btn btn-sm d-inline-flex align-items-center gap-1"
+                          style={{ background: '#fff0f0', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 8, fontSize: 12, fontWeight: 600, padding: '5px 10px' }}
+                          onClick={(e) => handleDeleteTree(e, tree._id)}
+                        >
+                          <FiTrash2 size={13} /> Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

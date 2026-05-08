@@ -209,13 +209,6 @@ function LeafNode({ data }) {
               </div>
             )}
 
-            {/* Gender */}
-            <div style={{
-              fontSize: 8.5, fontWeight: 700, textTransform: 'uppercase',
-              letterSpacing: 0.8, color: p.border, opacity: 0.9,
-            }}>
-              {p.icon} {p.label}
-            </div>
           </div>
         </div>
 
@@ -313,21 +306,21 @@ function LeafNode({ data }) {
 
         {/* Nickname */}
         {node.nickname && (
-          <div style={{ fontSize: 10.5, opacity: 0.65, fontStyle: 'italic', marginBottom: 5 }}>
+          <div style={{ fontSize: 10.5, opacity: 0.65, fontStyle: 'italic', marginBottom: 4 }}>
             "{node.nickname}"
           </div>
         )}
 
-        {/* Gender pill */}
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 3,
-          fontSize: 9.5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.8,
-          background: 'rgba(0,0,0,0.3)',
-          border: `1px solid rgba(255,255,255,0.15)`,
-          padding: '2px 10px', borderRadius: 20
-        }}>
-          {p.label}
-        </div>
+        {/* Unique 6-digit code assigned by backend */}
+        {node.code && (
+          <div style={{
+            fontSize: 9, color: 'rgba(255,255,255,0.35)',
+            letterSpacing: 1.2, marginTop: 2, fontFamily: 'monospace'
+          }}>
+            #{node.code}
+          </div>
+        )}
+
       </div>
 
       <Handle type="source" id="bottom" position={Position.Bottom}

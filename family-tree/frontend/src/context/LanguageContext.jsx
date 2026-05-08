@@ -136,7 +136,7 @@ const translations = {
     // modal titles
     addRootMember: 'Add Root Member',
     addChildModal: 'Add Child',
-    addBrotherSister: 'Add Brother / Sister',
+    addBrotherSister: 'Add Brother',
     addParentModal: 'Add Parent',
     editMember: 'Edit Member',
 
@@ -271,8 +271,8 @@ const translations = {
     growYourTree: 'તમારું વૃક્ષ વિકસાવો',
     addRootAncestor: 'મૂળ પૂર્વજ ઉમેરો',
     addChild: 'બાળક ઉમેરો',
-    addSibling: 'ભાઈ/બહેન ઉમેરો',
-    addParent: 'માતા-પિતા ઉમેરો',
+    addSibling: 'ભાઈ ઉમેરો',
+    addParent: 'પિતા ઉમેરો',
     selectedLabel: 'પસંદ',
     edit: 'સંપાદિત',
     delete: 'કાઢો',
@@ -287,7 +287,7 @@ const translations = {
     nameRequired: 'નામ જરૂરી છે',
     nicknameLabel: 'ઉર્ફે',
     optional: '(વૈકલ્પિક)',
-    nicknamePlaceholder: 'દા.ત. દાદા, દાદી',
+    nicknamePlaceholder: 'દા.ત. દાદા',
     genderLabel: 'જાતિ',
     genderMale: 'પુરુષ',
     genderFemale: 'સ્ત્રી',
@@ -305,8 +305,8 @@ const translations = {
     // modal titles
     addRootMember: 'મૂળ સભ્ય ઉમેરો',
     addChildModal: 'બાળક ઉમેરો',
-    addBrotherSister: 'ભાઈ / બહેન ઉમેરો',
-    addParentModal: 'માતા-પિતા ઉમેરો',
+    addBrotherSister: 'ભાઈ ઉમેરો',
+    addParentModal: 'પિતા ઉમેરો',
     editMember: 'સભ્ય સંપાદિત કરો',
 
     // toasts
@@ -314,8 +314,8 @@ const translations = {
     memberUpdated: 'સભ્ય અપડેટ થયો',
     rootMemberAdded: 'મૂળ સભ્ય ઉમેરાયો',
     childAdded: 'બાળક ઉમેરાયો',
-    siblingAdded: 'ભાઈ/બહેન ઉમેરાયા',
-    parentAdded: 'માતા-પિતા ઉમેરાયા',
+    siblingAdded: 'ભાઈ ઉમેરાયા',
+    parentAdded: 'પિતા ઉમેરાયા',
     memberDeleted: 'સભ્ય કાઢ્યો',
     addAtLeastOneMember: 'ઓછામાં ઓછો એક સભ્ય ઉમેરો',
     familyTreeSaved: 'કુટુંબ વૃક્ષ સાચવ્યું!',

@@ -65,11 +65,12 @@ function LeafNode({ data }) {
       <div style={{ width:NODE_W, background:`linear-gradient(160deg,${c1} 0%,${c2} 100%)`, borderRadius:12, padding:'14px 12px 12px', color:'#fff', textAlign:'center', position:'relative', cursor:'pointer', border:isSelected?'3px solid #F4C430':`2px solid ${p.border}`, boxShadow:isSelected?'0 0 0 4px rgba(244,196,48,0.25),0 12px 36px rgba(0,0,0,0.5)':'0 8px 28px rgba(0,0,0,0.4)', transform:isSelected?'scale(1.06)':'scale(1)', transition:'transform 0.18s', zIndex:1 }}>
         {isRoot && <div style={{ position:'absolute',top:-11,left:'50%',transform:'translateX(-50%)',background:'linear-gradient(90deg,#F4C430,#D4A017)',color:'#3B1F00',fontSize:9,fontWeight:800,padding:'2px 12px',borderRadius:20,letterSpacing:1.5,whiteSpace:'nowrap' }}>🌳 COMMON ROOT</div>}
         {isSelected && !isRoot && <div style={{ position:'absolute',top:-10,right:6,background:'linear-gradient(90deg,#22c55e,#16a34a)',color:'#fff',fontSize:8,fontWeight:800,padding:'2px 8px',borderRadius:20 }}>✓</div>}
-        <div style={{ fontSize:9,opacity:0.6,marginBottom:4 }}>{(LEAF[node.gender]||LEAF.male).icon}</div>
         <div style={{ width:42,height:42,borderRadius:'50%',background:'rgba(0,0,0,0.25)',border:`2px solid ${isSelected?'#F4C430':'rgba(255,255,255,0.35)'}`,display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 8px',fontSize:15,fontWeight:800,color:'#fff' }}>{initials(node.name)}</div>
         <div style={{ fontWeight:700,fontSize:13,lineHeight:1.3,wordBreak:'break-word',marginBottom:2,textShadow:'0 1px 4px rgba(0,0,0,0.5)' }}>{node.name}</div>
-        {node.nickname && <div style={{ fontSize:10.5,opacity:0.65,fontStyle:'italic',marginBottom:5 }}>"{node.nickname}"</div>}
-        <div style={{ display:'inline-flex',alignItems:'center',gap:3,fontSize:9.5,fontWeight:600,textTransform:'uppercase',letterSpacing:0.8,background:'rgba(0,0,0,0.3)',border:'1px solid rgba(255,255,255,0.15)',padding:'2px 10px',borderRadius:20 }}>{node.gender}</div>
+        {node.nickname && <div style={{ fontSize:10.5,opacity:0.65,fontStyle:'italic',marginBottom:4 }}>"{node.nickname}"</div>}
+        {node.code && (
+          <div style={{ fontSize:9,color:'rgba(255,255,255,0.35)',letterSpacing:1.2,marginTop:2,fontFamily:'monospace' }}>#{node.code}</div>
+        )}
       </div>
       <Handle type="source" id="bottom" position={Position.Bottom} style={{ background:'transparent',border:'none',width:1,height:1,bottom:0,opacity:0 }}/>
     </>
@@ -115,14 +116,6 @@ function NodeModal({ open, onClose, onSave, title, initial }) {
         <div className="mb-3">
           <label style={{ fontSize:12,fontWeight:600,color:'rgba(255,255,255,0.6)',display:'block',marginBottom:7 }}>Nickname <span style={{opacity:0.4}}>(optional)</span></label>
           <input type="text" placeholder="e.g. Kaka, Bhai" value={form.nickname} onChange={e=>setForm({...form,nickname:e.target.value})} style={iStyle} onFocus={e=>e.target.style.borderColor='#8B5CF6'} onBlur={e=>e.target.style.borderColor='rgba(139,92,246,0.3)'}/>
-        </div>
-        <div className="mb-4">
-          <label style={{ fontSize:12,fontWeight:600,color:'rgba(255,255,255,0.6)',display:'block',marginBottom:10 }}>Gender</label>
-          <div style={{display:'flex',gap:10}}>
-            {[{v:'male',l:'Male',ac:'#3b82f6'},{v:'female',l:'Female',ac:'#ec4899'},{v:'other',l:'Other',ac:'#8b5cf6'}].map(g=>(
-              <div key={g.v} onClick={()=>setForm({...form,gender:g.v})} style={{ flex:1,padding:'10px 8px',borderRadius:12,textAlign:'center',cursor:'pointer',fontWeight:600,fontSize:13,border:`2px solid ${form.gender===g.v?g.ac:'rgba(255,255,255,0.1)'}`,background:form.gender===g.v?`rgba(${g.v==='male'?'59,130,246':g.v==='female'?'236,72,153':'139,92,246'},0.15)`:'rgba(255,255,255,0.04)',color:form.gender===g.v?g.ac:'rgba(255,255,255,0.45)',transition:'all 0.18s' }}>{g.l}</div>
-            ))}
-          </div>
         </div>
         <div className="mb-4">
           <label style={{ fontSize:12,fontWeight:600,color:'rgba(255,255,255,0.6)',display:'block',marginBottom:7 }}>Date of Birth <span style={{opacity:0.4}}>(optional)</span></label>
@@ -217,7 +210,8 @@ export default function CommonTreePage() {
     if (!nodes.length) { toast.error('Add at least one node'); return; }
     setSaving(true);
     try {
-      await api.post('/api/common-tree', { nodes });
+      const res = await api.post('/api/common-tree', { nodes });
+      if (res.data.tree?.nodes?.length) setNodes(res.data.tree.nodes);
       toast.success('Common tree saved!');
     } catch { toast.error('Failed to save'); }
     finally { setSaving(false); }
@@ -271,6 +265,9 @@ export default function CommonTreePage() {
               <div style={{ background:'rgba(108,63,197,0.2)',border:'1px solid rgba(139,92,246,0.35)',borderRadius:12,padding:'10px 12px' }}>
                 <div style={{ fontSize:10,color:'#a78bfa',fontWeight:700,letterSpacing:1,marginBottom:4 }}>✓ SELECTED</div>
                 <div style={{ fontWeight:700,fontSize:13,color:'#fff' }}>{selected.name}</div>
+                {selected.code && (
+                  <div style={{ fontSize:10,color:'#a78bfa',marginTop:4,letterSpacing:1,fontFamily:'monospace' }}>ID: {selected.code}</div>
+                )}
               </div>
               <div style={{display:'flex',gap:8}}>
                 <button onClick={()=>openEdit(selected.nodeId)} style={{...btnBase,flex:1,justifyContent:'center',background:'rgba(251,191,36,0.15)',color:'#fbbf24',border:'1px solid rgba(251,191,36,0.3)'}}><FiEdit2 size={13}/> Edit</button>

@@ -94,9 +94,9 @@ function computeLayout(nodes) {
 }
 
 const genderStyle = {
-  male:   { bg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', border: '#93c5fd', icon: '♂' },
-  female: { bg: 'linear-gradient(135deg,#ec4899,#be185d)', border: '#f9a8d4', icon: '♀' },
-  other:  { bg: 'linear-gradient(135deg,#8b5cf6,#5b21b6)', border: '#c4b5fd', icon: '⚧' }
+  male:   { bg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', border: '#93c5fd' },
+  female: { bg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', border: '#93c5fd' },
+  other:  { bg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', border: '#93c5fd' }
 };
 const rootBg = 'linear-gradient(135deg,#6C3FC5,#4c1d95)';
 
@@ -150,9 +150,9 @@ function PersonNode({ data }) {
           border: '2px solid rgba(255,255,255,0.5)',
           display: 'flex', alignItems: 'center',
           justifyContent: 'center',
-          fontSize: 20, marginBottom: 8, flexShrink: 0
+          fontSize: 14, fontWeight: 800, marginBottom: 8, flexShrink: 0
         }}>
-          {gs.icon}
+          {node.name.trim().split(/\s+/).slice(0,2).map(w=>w[0]?.toUpperCase()).join('')||'?'}
         </div>
 
         <div style={{ fontWeight: 700, fontSize: 13, lineHeight: 1.25, wordBreak: 'break-word' }}>
@@ -165,13 +165,14 @@ function PersonNode({ data }) {
           </div>
         )}
 
-        <div style={{
-          marginTop: 6, fontSize: 10, fontWeight: 600,
-          background: 'rgba(255,255,255,0.2)',
-          padding: '2px 10px', borderRadius: 20, textTransform: 'capitalize'
-        }}>
-          {node.gender}
-        </div>
+        {node.code && (
+          <div style={{
+            marginTop: 5, fontSize: 9, color: 'rgba(255,255,255,0.45)',
+            letterSpacing: 1.2, fontFamily: 'monospace'
+          }}>
+            #{node.code}
+          </div>
+        )}
       </div>
 
       <Handle

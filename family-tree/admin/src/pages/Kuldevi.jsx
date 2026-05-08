@@ -14,7 +14,7 @@ function Kuldevi() {
   const fetchList = async () => {
     try {
       const res = await api.get('/api/kuldevi');
-      setList(res.data.kuldevis);
+      setList([...res.data.kuldevis].sort((a, b) => a.name.localeCompare(b.name)));
     } catch {
       toast.error('Failed to load list');
     } finally {

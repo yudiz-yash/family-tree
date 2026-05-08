@@ -28,6 +28,10 @@ const nodeSchema = new mongoose.Schema(
     dateOfBirth: {
       type: String,
       default: ''
+    },
+    code: {
+      type: String,
+      default: ''
     }
   },
   { _id: false }

@@ -22,7 +22,7 @@ function CompleteProfile() {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    api.get('/api/kuldevi').then(res => setKuldeviOptions(res.data.kuldevis)).catch(() => {});
+    api.get('/api/kuldevi').then(res => setKuldeviOptions([...res.data.kuldevis].sort((a, b) => a.name.localeCompare(b.name)))).catch(() => {});
   }, []);
 
   const validate = () => {

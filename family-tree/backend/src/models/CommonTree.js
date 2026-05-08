@@ -7,7 +7,8 @@ const nodeSchema = new mongoose.Schema(
     nickname:   { type: String, trim: true, default: '' },
     gender:     { type: String, enum: ['male', 'female', 'other'], default: 'male' },
     parentId:   { type: String, default: null },
-    dateOfBirth:{ type: String, default: '' }
+    dateOfBirth:{ type: String, default: '' },
+    code:       { type: String, default: '' }
   },
   { _id: false }
 );

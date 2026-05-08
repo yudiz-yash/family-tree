@@ -11,6 +11,8 @@ function Dashboard() {
 
   useEffect(() => {
     fetchStats();
+    // Silently assign 6-digit codes to any nodes that don't have one yet
+    api.post('/api/admin/migrate-codes').catch(() => {});
   }, []);
 
   const fetchStats = async () => {

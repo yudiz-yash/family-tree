@@ -24,7 +24,7 @@ function EditProfile() {
 
   useEffect(() => {
     fetchProfile();
-    api.get('/api/kuldevi').then(res => setKuldeviOptions(res.data.kuldevis)).catch(() => {});
+    api.get('/api/kuldevi').then(res => setKuldeviOptions([...res.data.kuldevis].sort((a, b) => a.name.localeCompare(b.name)))).catch(() => {});
   }, []);
 
   const fetchProfile = async () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiUsers, FiCheckCircle, FiClock, FiGitMerge, FiSearch } from 'react-icons/fi';
+import { FiUsers, FiCheckCircle, FiClock, FiGitMerge, FiSearch, FiTrash2 } from 'react-icons/fi';
 import api from '../api/axios';
 
 function Users() {
@@ -32,6 +32,18 @@ function Users() {
       month: 'short',
       year: 'numeric'
     });
+  };
+
+  const handleDeleteUser = async (e, userId) => {
+    e.stopPropagation();
+    if (!window.confirm('Permanently delete this user and their family tree? This cannot be undone.')) return;
+    try {
+      await api.delete(`/api/admin/users/${userId}`);
+      setUsers(prev => prev.filter(u => u._id !== userId));
+      toast.success('User deleted');
+    } catch {
+      toast.error('Failed to delete user');
+    }
   };
 
   const filtered = users.filter((u) => {
@@ -95,6 +107,7 @@ function Users() {
                   <th>Tree Status</th>
                   <th>Profile</th>
                   <th>Joined</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -138,6 +151,15 @@ function Users() {
                       )}
                     </td>
                     <td style={{ color: '#64748b' }}>{formatDate(user.createdAt)}</td>
+                    <td>
+                      <button
+                        onClick={(e) => handleDeleteUser(e, user._id)}
+                        className="btn btn-sm d-flex align-items-center gap-1"
+                        style={{ background: '#fff0f0', color: '#dc2626', border: '1px solid #fecaca', borderRadius: 8, fontSize: 13 }}
+                      >
+                        <FiTrash2 size={13} /> Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
