@@ -3,6 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
+const { sendAdminNotification } = require('../utils/email');
 
 // PUT /api/user/profile
 router.put(
@@ -23,21 +24,19 @@ router.put(
     }
 
     const { firstName, lastName, city, kuldeviName, surapura, contactNumber } = req.body;
+    const isFirstCompletion = !req.user.profileCompleted;
 
     try {
       const user = await User.findByIdAndUpdate(
         req.user._id,
-        {
-          firstName,
-          lastName,
-          city,
-          kuldeviName,
-          surapura,
-          contactNumber,
-          profileCompleted: true
-        },
+        { firstName, lastName, city, kuldeviName, surapura, contactNumber, profileCompleted: true },
         { new: true }
       ).select('-password');
+
+      // Notify admin with full profile details when profile is completed for the first time
+      if (isFirstCompletion && user.status === 'pending') {
+        sendAdminNotification(user).catch(err => console.error('Admin notify email failed:', err.message));
+      }
 
       res.json({
         success: true,
@@ -52,7 +51,8 @@ router.put(
           surapura: user.surapura,
           contactNumber: user.contactNumber,
           profileCompleted: user.profileCompleted,
-          role: user.role
+          role: user.role,
+          status: user.status
         }
       });
     } catch (error) {
@@ -82,7 +82,8 @@ router.get('/profile', protect, async (req, res) => {
         surapura: user.surapura,
         contactNumber: user.contactNumber,
         profileCompleted: user.profileCompleted,
-        role: user.role
+        role: user.role,
+        status: user.status
       }
     });
   } catch (error) {

@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
-const { sendAdminNotification, sendApprovalEmail, sendRejectionEmail } = require('../utils/email');
 
 const generateToken = (id, role = 'user', email = null) => {
   return jwt.sign({ id, role, email }, process.env.JWT_SECRET, {
@@ -34,14 +33,18 @@ router.post(
       }
 
       const user = await User.create({ email, password, status: 'pending' });
-
-      // Notify admin — fire and forget
-      sendAdminNotification(user).catch(err => console.error('Admin notify email failed:', err.message));
+      const token = generateToken(user._id);
 
       res.status(201).json({
         success: true,
-        pending: true,
-        message: 'Registration successful! Your account is pending admin approval. You will receive an email once approved.'
+        token,
+        user: {
+          id: user._id,
+          email: user.email,
+          profileCompleted: user.profileCompleted,
+          role: user.role,
+          status: user.status
+        }
       });
     } catch (error) {
       console.error(error);
@@ -76,14 +79,6 @@ router.post(
         return res.status(401).json({ success: false, message: 'Invalid email or password' });
       }
 
-      if (user.status === 'pending') {
-        return res.status(401).json({
-          success: false,
-          pending: true,
-          message: 'Your account is pending admin approval. You will receive an email once approved.'
-        });
-      }
-
       if (user.status === 'rejected') {
         return res.status(401).json({
           success: false,
@@ -91,6 +86,16 @@ router.post(
         });
       }
 
+      // pending + profile already submitted → block until admin approves
+      if (user.status === 'pending' && user.profileCompleted) {
+        return res.status(401).json({
+          success: false,
+          pending: true,
+          message: 'Your account is pending admin approval. You will receive an email once approved.'
+        });
+      }
+
+      // pending + profile not yet done → allow login so they can complete profile
       const token = generateToken(user._id);
 
       res.json({
@@ -105,7 +110,8 @@ router.post(
           kuldeviName: user.kuldeviName,
           contactNumber: user.contactNumber,
           profileCompleted: user.profileCompleted,
-          role: user.role
+          role: user.role,
+          status: user.status
         }
       });
     } catch (error) {
@@ -157,7 +163,8 @@ router.get('/me', protect, async (req, res) => {
         kuldeviName: req.user.kuldeviName,
         contactNumber: req.user.contactNumber,
         profileCompleted: req.user.profileCompleted,
-        role: req.user.role
+        role: req.user.role,
+        status: req.user.status
       }
     });
   } catch (error) {

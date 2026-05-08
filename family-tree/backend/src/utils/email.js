@@ -10,20 +10,31 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-async function sendAdminNotification(newUser) {
+async function sendAdminNotification(user) {
+  const row = (label, value) =>
+    `<tr>
+      <td style="padding:7px 0;color:#6b7280;font-size:13px;white-space:nowrap;padding-right:20px">${label}</td>
+      <td style="padding:7px 0;font-weight:600;font-size:13px">${value || '—'}</td>
+    </tr>`;
+
   await transporter.sendMail({
     from: `"Family Tree" <${process.env.SMTP_USER}>`,
     to: process.env.NOTIFY_EMAIL,
     subject: 'New User Registration – Approval Required',
     html: `
-      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;border:1px solid #e5e7eb;border-radius:10px">
+      <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:28px;border:1px solid #e5e7eb;border-radius:12px">
         <h2 style="color:#6C3FC5;margin-top:0">New Registration Request</h2>
-        <p>A new user has registered and is awaiting your approval:</p>
-        <table style="border-collapse:collapse;width:100%">
-          <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">Email</td><td style="padding:6px 0;font-weight:600">${newUser.email}</td></tr>
-          <tr><td style="padding:6px 0;color:#6b7280;font-size:14px">Registered</td><td style="padding:6px 0;font-weight:600">${new Date().toLocaleString('en-IN')}</td></tr>
+        <p style="color:#374151">A new user has completed their profile and is awaiting your approval:</p>
+        <table style="border-collapse:collapse;width:100%;margin-top:12px">
+          ${row('Full Name', `${user.firstName || ''} ${user.lastName || ''}`.trim())}
+          ${row('Email', user.email)}
+          ${row('City', user.city)}
+          ${row('Kuldevi / Madh', user.kuldeviName)}
+          ${row('Surapura', user.surapura)}
+          ${row('Contact Number', user.contactNumber)}
+          ${row('Registered At', new Date(user.createdAt).toLocaleString('en-IN'))}
         </table>
-        <p style="margin-top:16px">Please log in to the <strong>Admin Panel</strong> to approve or reject this request.</p>
+        <p style="margin-top:20px;color:#374151">Please log in to the <strong>Admin Panel → Approvals</strong> to approve or reject this request.</p>
       </div>
     `
   });
