@@ -101,7 +101,6 @@ function FamilyTrees() {
                   <th>Email</th>
                   <th>Members</th>
                   <th>Male</th>
-                  <th>Female</th>
                   <th>Created</th>
                   <th>Updated</th>
                   <th>Actions</th>
@@ -137,11 +136,6 @@ function FamilyTrees() {
                     <td>
                       <span style={{ color: '#1d4ed8', fontWeight: 600 }}>
                         {tree.nodes?.filter((n) => n.gender === 'male').length || 0}
-                      </span>
-                    </td>
-                    <td>
-                      <span style={{ color: '#be185d', fontWeight: 600 }}>
-                        {tree.nodes?.filter((n) => n.gender === 'female').length || 0}
                       </span>
                     </td>
                     <td style={{ color: '#64748b' }}>{formatDate(tree.createdAt)}</td>
