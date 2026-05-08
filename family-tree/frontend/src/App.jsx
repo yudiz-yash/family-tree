@@ -38,7 +38,7 @@ function App() {
         <Route
           path="/family-tree"
           element={
-            <PrivateRoute>
+            <PrivateRoute onlyApproved>
               <FamilyTreeBuilder />
             </PrivateRoute>
           }
@@ -46,7 +46,7 @@ function App() {
         <Route
           path="/edit-profile"
           element={
-            <PrivateRoute>
+            <PrivateRoute onlyApproved>
               <EditProfile />
             </PrivateRoute>
           }
