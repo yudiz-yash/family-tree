@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiMail, FiLock, FiGitMerge } from 'react-icons/fi';
+import { FiMail, FiLock, FiGitMerge, FiCheckCircle } from 'react-icons/fi';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import LangSwitcher from '../components/LangSwitcher';
@@ -12,6 +12,7 @@ function Signup() {
   const [form, setForm] = useState({ email: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
 
   const validate = () => {
     const errs = {};
@@ -38,11 +39,9 @@ function Signup() {
         email: form.email,
         password: form.password
       });
-      const { token, user } = res.data;
-      localStorage.setItem('family_tree_token', token);
-      localStorage.setItem('family_tree_user', JSON.stringify(user));
-      toast.success(t.accountCreated);
-      navigate('/complete-profile');
+      if (res.data.pending) {
+        setSubmitted(true);
+      }
     } catch (err) {
       const msg = err.response?.data?.message || t.registrationFailed;
       toast.error(msg);
@@ -50,6 +49,31 @@ function Signup() {
       setLoading(false);
     }
   };
+
+  if (submitted) {
+    return (
+      <div className="auth-container">
+        <div className="auth-card" style={{ textAlign: 'center' }}>
+          <FiCheckCircle size={56} color="#16a34a" style={{ marginBottom: 16 }} />
+          <h2 style={{ color: '#16a34a', fontWeight: 700 }}>Registration Submitted!</h2>
+          <p style={{ color: '#555', marginTop: 8 }}>
+            Your account is <strong>pending admin approval</strong>. You will receive an email at <strong>{form.email}</strong> once your account is approved.
+          </p>
+          <Link
+            to="/login"
+            style={{
+              display: 'inline-block', marginTop: 20,
+              background: '#6C3FC5', color: '#fff',
+              padding: '10px 28px', borderRadius: 10,
+              fontWeight: 600, textDecoration: 'none', fontSize: 14
+            }}
+          >
+            Back to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-container">

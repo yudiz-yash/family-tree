@@ -10,6 +10,7 @@ import UserDetail from './pages/UserDetail';
 import FamilyTrees from './pages/FamilyTrees';
 import Kuldevi from './pages/Kuldevi';
 import CommonTree from './pages/CommonTree';
+import Approvals from './pages/Approvals';
 
 function App() {
   return (
@@ -74,6 +75,16 @@ function App() {
             <PrivateRoute>
               <Layout>
                 <CommonTree />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/approvals"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Approvals />
               </Layout>
             </PrivateRoute>
           }

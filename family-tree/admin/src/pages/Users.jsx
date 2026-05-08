@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiUsers, FiCheckCircle, FiClock, FiGitMerge, FiSearch, FiTrash2 } from 'react-icons/fi';
+import { FiUsers, FiCheckCircle, FiClock, FiGitMerge, FiSearch, FiTrash2, FiUserCheck, FiUserX } from 'react-icons/fi';
 import api from '../api/axios';
 
 function Users() {
@@ -104,6 +104,7 @@ function Users() {
                   <th>City</th>
                   <th>Kuldevi</th>
                   <th>Contact</th>
+                  <th>Account</th>
                   <th>Tree Status</th>
                   <th>Profile</th>
                   <th>Joined</th>
@@ -129,6 +130,21 @@ function Users() {
                     <td>{user.city || '—'}</td>
                     <td>{user.kuldeviName || '—'}</td>
                     <td>{user.contactNumber || '—'}</td>
+                    <td>
+                      {user.status === 'pending' ? (
+                        <span style={{ display:'inline-flex', alignItems:'center', gap:4, background:'#fef3c7', color:'#92400e', fontSize:11, fontWeight:600, padding:'3px 8px', borderRadius:20 }}>
+                          <FiClock size={10} /> Pending
+                        </span>
+                      ) : user.status === 'rejected' ? (
+                        <span style={{ display:'inline-flex', alignItems:'center', gap:4, background:'#fee2e2', color:'#dc2626', fontSize:11, fontWeight:600, padding:'3px 8px', borderRadius:20 }}>
+                          <FiUserX size={10} /> Rejected
+                        </span>
+                      ) : (
+                        <span style={{ display:'inline-flex', alignItems:'center', gap:4, background:'#dcfce7', color:'#16a34a', fontSize:11, fontWeight:600, padding:'3px 8px', borderRadius:20 }}>
+                          <FiUserCheck size={10} /> Approved
+                        </span>
+                      )}
+                    </td>
                     <td>
                       {user.familyTree ? (
                         <span className="badge-info">

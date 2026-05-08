@@ -101,12 +101,6 @@ function Dashboard() {
                         </div>
                         <div style={{ fontSize: 13, color: '#888' }}>{t.male}</div>
                       </div>
-                      <div style={{ background: '#fff0f8', borderRadius: 12, padding: '16px 20px', flex: 1, textAlign: 'center' }}>
-                        <div style={{ fontSize: 28, fontWeight: 800, color: '#be185d' }}>
-                          {tree.nodes.filter(n => n.gender === 'female').length}
-                        </div>
-                        <div style={{ fontSize: 13, color: '#888' }}>{t.female}</div>
-                      </div>
                     </div>
                     <button
                       className="btn w-100 fw-semibold d-flex align-items-center justify-content-center gap-2"

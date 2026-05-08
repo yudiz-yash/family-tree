@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiUsers, FiGitMerge, FiCheckCircle, FiClock } from 'react-icons/fi';
+import { FiUsers, FiGitMerge, FiCheckCircle, FiClock, FiUserCheck } from 'react-icons/fi';
 import api from '../api/axios';
 
 function Dashboard() {
@@ -49,14 +49,24 @@ function Dashboard() {
       value: stats?.totalUsers || 0,
       icon: FiUsers,
       bg: 'linear-gradient(135deg, #6C3FC5, #8B5CF6)',
-      light: '#ede9fe'
+      light: '#ede9fe',
+      link: '/users'
     },
     {
       label: 'Family Trees',
       value: stats?.totalTrees || 0,
       icon: FiGitMerge,
       bg: 'linear-gradient(135deg, #0891b2, #06b6d4)',
-      light: '#e0f2fe'
+      light: '#e0f2fe',
+      link: '/family-trees'
+    },
+    {
+      label: 'Pending Approvals',
+      value: stats?.pendingApprovals || 0,
+      icon: FiUserCheck,
+      bg: 'linear-gradient(135deg, #d97706, #f59e0b)',
+      light: '#fef3c7',
+      link: '/approvals'
     }
   ];
 
@@ -70,18 +80,17 @@ function Dashboard() {
       {/* Stats Cards */}
       <div className="stats-grid">
         {statCards.map((card) => (
-          <div className="stat-card" key={card.label}>
-            <div
-              className="stat-icon"
-              style={{ background: card.bg }}
-            >
-              <card.icon size={24} color="#fff" />
+          <Link to={card.link} key={card.label} style={{ textDecoration: 'none' }}>
+            <div className="stat-card" style={{ cursor: 'pointer' }}>
+              <div className="stat-icon" style={{ background: card.bg }}>
+                <card.icon size={24} color="#fff" />
+              </div>
+              <div>
+                <div className="stat-value">{card.value}</div>
+                <div className="stat-label">{card.label}</div>
+              </div>
             </div>
-            <div>
-              <div className="stat-value">{card.value}</div>
-              <div className="stat-label">{card.label}</div>
-            </div>
-          </div>
+          </Link>
         ))}
       </div>
 

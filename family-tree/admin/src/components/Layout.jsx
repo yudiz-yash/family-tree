@@ -9,12 +9,14 @@ import {
   FiX,
   FiChevronRight,
   FiStar,
-  FiShare2
+  FiShare2,
+  FiUserCheck
 } from 'react-icons/fi';
 import logo from '/logo.png';
 
 const navItems = [
   { to: '/dashboard', icon: FiGrid, label: 'Dashboard' },
+  { to: '/approvals', icon: FiUserCheck, label: 'Approvals' },
   { to: '/users', icon: FiUsers, label: 'Users' },
   { to: '/family-trees', icon: FiGitMerge, label: 'Family Trees' },
   { to: '/kuldevi', icon: FiStar, label: 'Madh / Kuldevi' },

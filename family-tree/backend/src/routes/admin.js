@@ -4,6 +4,7 @@ const User = require('../models/User');
 const FamilyTree = require('../models/FamilyTree');
 const CommonTree = require('../models/CommonTree');
 const { protect, isAdmin } = require('../middleware/auth');
+const { sendApprovalEmail, sendRejectionEmail } = require('../utils/email');
 
 function generateCode(usedCodes) {
   let code, attempts = 0;
@@ -126,6 +127,7 @@ router.get('/stats', protect, isAdmin, async (req, res) => {
   try {
     const totalUsers = await User.countDocuments({ role: 'user' });
     const totalTrees = await FamilyTree.countDocuments();
+    const pendingApprovals = await User.countDocuments({ role: 'user', status: 'pending' });
 
     const recentUsers = await User.find({ role: 'user' })
       .select('-password')
@@ -137,9 +139,36 @@ router.get('/stats', protect, isAdmin, async (req, res) => {
       stats: {
         totalUsers,
         totalTrees,
+        pendingApprovals,
         recentUsers
       }
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// PUT /api/admin/users/:id/approve
+router.put('/users/:id/approve', protect, isAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, { status: 'approved' }, { new: true }).select('-password');
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    sendApprovalEmail(user).catch(err => console.error('Approval email failed:', err.message));
+    res.json({ success: true, message: 'User approved', user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// PUT /api/admin/users/:id/reject
+router.put('/users/:id/reject', protect, isAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, { status: 'rejected' }, { new: true }).select('-password');
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    sendRejectionEmail(user).catch(err => console.error('Rejection email failed:', err.message));
+    res.json({ success: true, message: 'User rejected', user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Server error' });

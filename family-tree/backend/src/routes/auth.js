@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
+const { sendAdminNotification, sendApprovalEmail, sendRejectionEmail } = require('../utils/email');
 
 const generateToken = (id, role = 'user', email = null) => {
   return jwt.sign({ id, role, email }, process.env.JWT_SECRET, {
@@ -32,18 +33,15 @@ router.post(
         return res.status(400).json({ success: false, message: 'User already exists with this email' });
       }
 
-      const user = await User.create({ email, password });
-      const token = generateToken(user._id);
+      const user = await User.create({ email, password, status: 'pending' });
+
+      // Notify admin — fire and forget
+      sendAdminNotification(user).catch(err => console.error('Admin notify email failed:', err.message));
 
       res.status(201).json({
         success: true,
-        token,
-        user: {
-          id: user._id,
-          email: user.email,
-          profileCompleted: user.profileCompleted,
-          role: user.role
-        }
+        pending: true,
+        message: 'Registration successful! Your account is pending admin approval. You will receive an email once approved.'
       });
     } catch (error) {
       console.error(error);
@@ -76,6 +74,21 @@ router.post(
       const isMatch = await user.matchPassword(password);
       if (!isMatch) {
         return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      }
+
+      if (user.status === 'pending') {
+        return res.status(401).json({
+          success: false,
+          pending: true,
+          message: 'Your account is pending admin approval. You will receive an email once approved.'
+        });
+      }
+
+      if (user.status === 'rejected') {
+        return res.status(401).json({
+          success: false,
+          message: 'Your registration request was not approved. Please contact the administrator.'
+        });
       }
 
       const token = generateToken(user._id);
