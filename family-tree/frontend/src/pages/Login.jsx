@@ -37,10 +37,12 @@ function Login() {
       localStorage.setItem('family_tree_token', token);
       localStorage.setItem('family_tree_user', JSON.stringify(user));
       toast.success(t.loginSuccess);
-      if (user.profileCompleted) {
-        navigate('/dashboard');
-      } else {
+      if (!user.profileCompleted) {
         navigate('/complete-profile');
+      } else if (!user.paymentDone) {
+        navigate('/payment');
+      } else {
+        navigate('/dashboard');
       }
     } catch (err) {
       const msg = err.response?.data?.message || t.loginFailed;

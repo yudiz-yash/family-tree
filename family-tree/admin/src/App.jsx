@@ -11,6 +11,7 @@ import FamilyTrees from './pages/FamilyTrees';
 import Kuldevi from './pages/Kuldevi';
 import CommonTree from './pages/CommonTree';
 import Approvals from './pages/Approvals';
+import PaymentSettings from './pages/PaymentSettings';
 
 function App() {
   return (
@@ -85,6 +86,16 @@ function App() {
             <PrivateRoute>
               <Layout>
                 <Approvals />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <PaymentSettings />
               </Layout>
             </PrivateRoute>
           }

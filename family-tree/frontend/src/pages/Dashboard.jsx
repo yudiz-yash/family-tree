@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiUsers, FiGitMerge, FiArrowRight, FiPlusCircle, FiUser, FiMapPin, FiPhone, FiEdit2, FiClock } from 'react-icons/fi';
+import { FiUsers, FiGitMerge, FiArrowRight, FiPlusCircle, FiUser, FiMapPin, FiPhone, FiEdit2, FiClock, FiCreditCard } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
@@ -51,34 +51,63 @@ function Dashboard() {
   }
 
   if (user?.status === 'pending') {
+    const paymentDone = user.paymentDone;
     return (
       <div className="dashboard-container">
         <Navbar />
         <div className="d-flex justify-content-center align-items-center" style={{ height: '70vh' }}>
           <div className="text-center" style={{ maxWidth: 480, padding: '0 20px' }}>
-            <div style={{
-              width: 80, height: 80, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 20px'
-            }}>
-              <FiClock size={36} color="#fff" />
-            </div>
-            <h3 style={{ color: '#92400e', fontWeight: 700, marginBottom: 10 }}>
-              Awaiting Approval
-            </h3>
-            <p style={{ color: '#78716c', fontSize: 15, lineHeight: 1.6 }}>
-              Your profile has been submitted successfully. The admin will review your details and you will receive an email at <strong>{user.email}</strong> once your account is approved.
-            </p>
-            <div style={{
-              marginTop: 24, padding: '14px 20px',
-              background: '#fef3c7', borderRadius: 12,
-              border: '1px solid #fde68a',
-              fontSize: 13, color: '#92400e'
-            }}>
-              <strong>What happens next?</strong><br />
-              Admin reviews your profile → Approves your account → You receive an email → You can log in and use the app.
-            </div>
+            {!paymentDone ? (
+              <>
+                <div style={{
+                  width: 80, height: 80, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #6C3FC5, #8B5CF6)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto 20px'
+                }}>
+                  <FiCreditCard size={36} color="#fff" />
+                </div>
+                <h3 style={{ color: '#6C3FC5', fontWeight: 700, marginBottom: 10 }}>
+                  Payment Pending
+                </h3>
+                <p style={{ color: '#78716c', fontSize: 15, lineHeight: 1.6 }}>
+                  Your profile is complete but payment has not been recorded yet. Please complete your payment to proceed.
+                </p>
+                <button
+                  className="btn mt-3 fw-semibold d-inline-flex align-items-center gap-2"
+                  style={{ background: '#6C3FC5', color: '#fff', borderRadius: 10, padding: '12px 28px' }}
+                  onClick={() => navigate('/payment')}
+                >
+                  <FiCreditCard size={16} /> Complete Payment
+                </button>
+              </>
+            ) : (
+              <>
+                <div style={{
+                  width: 80, height: 80, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto 20px'
+                }}>
+                  <FiClock size={36} color="#fff" />
+                </div>
+                <h3 style={{ color: '#92400e', fontWeight: 700, marginBottom: 10 }}>
+                  Awaiting Approval
+                </h3>
+                <p style={{ color: '#78716c', fontSize: 15, lineHeight: 1.6 }}>
+                  Your profile and payment have been submitted successfully. The admin will review your details and you will receive an email at <strong>{user.email}</strong> once your account is approved.
+                </p>
+                <div style={{
+                  marginTop: 24, padding: '14px 20px',
+                  background: '#fef3c7', borderRadius: 12,
+                  border: '1px solid #fde68a',
+                  fontSize: 13, color: '#92400e'
+                }}>
+                  <strong>What happens next?</strong><br />
+                  Admin verifies payment → Approves your account → You receive an email → You can log in and use the app.
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

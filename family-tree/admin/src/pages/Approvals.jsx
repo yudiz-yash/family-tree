@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import {
   FiUserCheck, FiUserX, FiClock, FiSearch,
-  FiMail, FiUser, FiMapPin, FiPhone, FiChevronDown, FiChevronUp
+  FiMail, FiUser, FiMapPin, FiPhone, FiChevronDown, FiChevronUp, FiCreditCard
 } from 'react-icons/fi';
 import api from '../api/axios';
 
@@ -160,6 +160,17 @@ function Approvals() {
                       {hasProfile ? '✓ Profile Complete' : '⏳ Profile Pending'}
                     </span>
 
+                    {/* Payment badge */}
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 4,
+                      background: user.paymentDone ? '#dbeafe' : '#fff7ed',
+                      color: user.paymentDone ? '#1d4ed8' : '#c2410c',
+                      fontSize: 11, fontWeight: 600,
+                      padding: '3px 10px', borderRadius: 20, flexShrink: 0
+                    }}>
+                      {user.paymentDone ? '💳 Payment Done' : '⏳ Payment Pending'}
+                    </span>
+
                     {/* Expand toggle */}
                     {hasProfile && (
                       <button
@@ -221,7 +232,8 @@ function Approvals() {
                           { icon: FiMapPin, label: 'City', value: user.city },
                           { emoji: '🕉️', label: 'Kuldevi / Madh', value: user.kuldeviName },
                           { emoji: '🏘️', label: 'Surapura', value: user.surapura },
-                          { icon: FiPhone, label: 'Contact', value: user.contactNumber }
+                          { icon: FiPhone, label: 'Contact', value: user.contactNumber },
+                          { icon: FiCreditCard, label: 'Payment', value: user.paymentDone ? '✓ Completed' : '⏳ Pending', highlight: user.paymentDone }
                         ].map(row => (
                           <div className="col-sm-6 col-lg-4" key={row.label}>
                             <div style={{
@@ -236,7 +248,7 @@ function Approvals() {
                                 }
                                 {row.label}
                               </div>
-                              <div style={{ fontWeight: 600, fontSize: 13, color: '#1e293b' }}>
+                              <div style={{ fontWeight: 600, fontSize: 13, color: row.highlight === true ? '#16a34a' : row.highlight === false ? '#c2410c' : '#1e293b' }}>
                                 {row.value || '—'}
                               </div>
                             </div>

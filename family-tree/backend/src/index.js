@@ -9,6 +9,7 @@ const familyTreeRoutes = require('./routes/familyTree');
 const adminRoutes = require('./routes/admin');
 const kuldeviRoutes = require('./routes/kuldevi');
 const commonTreeRoutes = require('./routes/commonTree');
+const settingsRoutes = require('./routes/settings');
 
 const app = express();
 
@@ -16,8 +17,8 @@ app.use(cors({
   origin: '*',
   credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
@@ -25,6 +26,7 @@ app.use('/api/family-tree', familyTreeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/kuldevi', kuldeviRoutes);
 app.use('/api/common-tree', commonTreeRoutes);
+app.use('/api/settings', settingsRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Family Tree API is running' });

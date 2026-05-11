@@ -10,7 +10,8 @@ import {
   FiChevronRight,
   FiStar,
   FiShare2,
-  FiUserCheck
+  FiUserCheck,
+  FiSettings
 } from 'react-icons/fi';
 import logo from '/logo.png';
 
@@ -20,7 +21,8 @@ const navItems = [
   { to: '/users', icon: FiUsers, label: 'Users' },
   { to: '/family-trees', icon: FiGitMerge, label: 'Family Trees' },
   { to: '/kuldevi', icon: FiStar, label: 'Madh / Kuldevi' },
-  { to: '/common-tree', icon: FiShare2, label: 'Common Tree' }
+  { to: '/common-tree', icon: FiShare2, label: 'Common Tree' },
+  { to: '/settings', icon: FiSettings, label: 'Payment Settings' }
 ];
 
 function Layout({ children }) {

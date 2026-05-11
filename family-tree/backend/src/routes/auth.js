@@ -42,6 +42,7 @@ router.post(
           id: user._id,
           email: user.email,
           profileCompleted: user.profileCompleted,
+          paymentDone: user.paymentDone,
           role: user.role,
           status: user.status
         }
@@ -86,8 +87,8 @@ router.post(
         });
       }
 
-      // pending + profile already submitted → block until admin approves
-      if (user.status === 'pending' && user.profileCompleted) {
+      // pending + profile done + payment done → block until admin approves
+      if (user.status === 'pending' && user.profileCompleted && user.paymentDone) {
         return res.status(401).json({
           success: false,
           pending: true,
@@ -95,7 +96,7 @@ router.post(
         });
       }
 
-      // pending + profile not yet done → allow login so they can complete profile
+      // allow login so user can complete profile or payment
       const token = generateToken(user._id);
 
       res.json({
@@ -110,6 +111,7 @@ router.post(
           kuldeviName: user.kuldeviName,
           contactNumber: user.contactNumber,
           profileCompleted: user.profileCompleted,
+          paymentDone: user.paymentDone,
           role: user.role,
           status: user.status
         }
@@ -163,6 +165,7 @@ router.get('/me', protect, async (req, res) => {
         kuldeviName: req.user.kuldeviName,
         contactNumber: req.user.contactNumber,
         profileCompleted: req.user.profileCompleted,
+        paymentDone: req.user.paymentDone,
         role: req.user.role,
         status: req.user.status
       }

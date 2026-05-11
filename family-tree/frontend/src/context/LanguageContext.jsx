@@ -140,6 +140,17 @@ const translations = {
     addParentModal: 'Add Parent',
     editMember: 'Edit Member',
 
+    // payment page
+    paymentTitle: 'Complete Payment',
+    paymentSub: 'Scan the QR code below and complete your payment',
+    paymentAmount: 'Amount to Pay',
+    paymentInstruction: 'Open any UPI app, scan the QR code and pay the amount shown above.',
+    paymentDoneBtn: 'Payment Completed',
+    paymentProcessing: 'Please wait...',
+    paymentSuccess: 'Payment marked! Awaiting admin approval.',
+    paymentFailed: 'Failed to record payment. Please try again.',
+    noQrCode: 'QR code not set up yet. Please contact admin.',
+
     // toasts
     selectMemberFirst: 'Select a member first',
     memberUpdated: 'Member updated',
@@ -308,6 +319,17 @@ const translations = {
     addBrotherSister: 'ભાઈ ઉમેરો',
     addParentModal: 'પિતા ઉમેરો',
     editMember: 'સભ્ય સંપાદિત કરો',
+
+    // payment page
+    paymentTitle: 'ચુકવણી પૂર્ણ કરો',
+    paymentSub: 'નીચે QR કોડ સ્કૅન કરો અને ચુકવણી કરો',
+    paymentAmount: 'ચૂકવવાની રકમ',
+    paymentInstruction: 'કોઈ પણ UPI એપ ખોલો, QR કોડ સ્કૅન કરો અને ઉપર બતાવેલ રકમ ચૂકવો.',
+    paymentDoneBtn: 'ચુકવણી પૂર્ણ થઈ',
+    paymentProcessing: 'રાહ જુઓ...',
+    paymentSuccess: 'ચુકવણી નોંધાઈ! એડ્મિન મંજૂરીની રાહ.',
+    paymentFailed: 'ચુકવણી નોંધવામાં નિષ્ફળ. ફરી પ્રયાસ કરો.',
+    noQrCode: 'QR કોડ હજી સેટ નથી. કૃપા કરી એડ્મિનનો સંપર્ક કરો.',
 
     // toasts
     selectMemberFirst: 'પ્રથમ સભ્ય પસંદ કરો',

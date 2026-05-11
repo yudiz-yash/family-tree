@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const FamilyTree = require('../models/FamilyTree');
 const CommonTree = require('../models/CommonTree');
+const Settings = require('../models/Settings');
 const { protect, isAdmin } = require('../middleware/auth');
 const { sendApprovalEmail, sendRejectionEmail } = require('../utils/email');
 
@@ -171,6 +172,43 @@ router.put('/users/:id/reject', protect, isAdmin, async (req, res) => {
     res.json({ success: true, message: 'User rejected', user });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// GET /api/admin/settings
+router.get('/settings', protect, isAdmin, async (req, res) => {
+  try {
+    const settings = await Settings.findOne();
+    res.json({
+      success: true,
+      qrCodeImage: settings?.qrCodeImage || '',
+      paymentAmount: settings?.paymentAmount || ''
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// PUT /api/admin/settings
+router.put('/settings', protect, isAdmin, async (req, res) => {
+  try {
+    const { qrCodeImage, paymentAmount } = req.body;
+    let settings = await Settings.findOne();
+    if (!settings) {
+      settings = await Settings.create({ qrCodeImage: qrCodeImage || '', paymentAmount: paymentAmount || '' });
+    } else {
+      if (qrCodeImage !== undefined) settings.qrCodeImage = qrCodeImage;
+      if (paymentAmount !== undefined) settings.paymentAmount = paymentAmount;
+      await settings.save();
+    }
+    res.json({
+      success: true,
+      message: 'Settings saved',
+      qrCodeImage: settings.qrCodeImage,
+      paymentAmount: settings.paymentAmount
+    });
+  } catch (error) {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });

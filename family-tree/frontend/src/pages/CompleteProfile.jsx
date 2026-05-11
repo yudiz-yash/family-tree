@@ -50,7 +50,7 @@ function CompleteProfile() {
       const { user } = res.data;
       localStorage.setItem('family_tree_user', JSON.stringify(user));
       toast.success(t.profileCompleted);
-      navigate('/dashboard');
+      navigate('/payment');
     } catch (err) {
       const msg = err.response?.data?.message || t.failedToSaveProfile;
       toast.error(msg);

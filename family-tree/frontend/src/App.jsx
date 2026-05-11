@@ -5,6 +5,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import CompleteProfile from './pages/CompleteProfile';
+import PaymentQR from './pages/PaymentQR';
 import Dashboard from './pages/Dashboard';
 import FamilyTreeBuilder from './pages/FamilyTreeBuilder';
 import EditProfile from './pages/EditProfile';
@@ -24,6 +25,14 @@ function App() {
           element={
             <PrivateRoute>
               <CompleteProfile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <PrivateRoute>
+              <PaymentQR />
             </PrivateRoute>
           }
         />

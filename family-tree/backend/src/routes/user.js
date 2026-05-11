@@ -51,6 +51,7 @@ router.put(
           surapura: user.surapura,
           contactNumber: user.contactNumber,
           profileCompleted: user.profileCompleted,
+          paymentDone: user.paymentDone,
           role: user.role,
           status: user.status
         }
@@ -82,6 +83,40 @@ router.get('/profile', protect, async (req, res) => {
         surapura: user.surapura,
         contactNumber: user.contactNumber,
         profileCompleted: user.profileCompleted,
+        paymentDone: user.paymentDone,
+        role: user.role,
+        status: user.status
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// POST /api/user/payment-done
+router.post('/payment-done', protect, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { paymentDone: true },
+      { new: true }
+    ).select('-password');
+
+    res.json({
+      success: true,
+      message: 'Payment marked as completed',
+      user: {
+        id: user._id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        city: user.city,
+        kuldeviName: user.kuldeviName,
+        surapura: user.surapura,
+        contactNumber: user.contactNumber,
+        profileCompleted: user.profileCompleted,
+        paymentDone: user.paymentDone,
         role: user.role,
         status: user.status
       }

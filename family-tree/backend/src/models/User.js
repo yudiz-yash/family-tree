@@ -48,6 +48,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    paymentDone: {
+      type: Boolean,
+      default: false
+    },
     role: {
       type: String,
       enum: ['user', 'admin'],
