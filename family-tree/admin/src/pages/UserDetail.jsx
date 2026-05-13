@@ -81,13 +81,13 @@ function UserDetail() {
             flexShrink: 0
           }}
         >
-          {user.firstName ? user.firstName[0].toUpperCase() : user.email[0].toUpperCase()}
+          {user.firstName ? user.firstName[0].toUpperCase() : (user.mobileNumber || '?')[0]}
         </div>
         <div>
           <h4 className="page-title mb-0">
             {user.firstName ? `${user.firstName} ${user.lastName}` : 'User'}
           </h4>
-          <p className="page-subtitle mb-0">{user.email}</p>
+          <p className="page-subtitle mb-0">{user.mobileNumber || '—'}</p>
         </div>
         <div className="ms-auto">
           {user.profileCompleted ? (
@@ -113,7 +113,8 @@ function UserDetail() {
 
             <div className="row">
               {[
-                { icon: FiMail, label: 'Email', value: user.email },
+                { icon: FiPhone, label: 'Mobile', value: user.mobileNumber || '—' },
+                { icon: FiMail, label: 'Email', value: user.email || '—' },
                 { icon: FiUser, label: 'First Name', value: user.firstName || '—' },
                 { icon: FiUser, label: 'Last Name', value: user.lastName || '—' },
                 { icon: FiMapPin, label: 'City', value: user.city || '—' },

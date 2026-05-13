@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiMail, FiLock, FiGitMerge } from 'react-icons/fi';
+import { FiPhone, FiLock, FiGitMerge } from 'react-icons/fi';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import LangSwitcher from '../components/LangSwitcher';
@@ -9,14 +9,14 @@ import LangSwitcher from '../components/LangSwitcher';
 function Signup() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [form, setForm] = useState({ email: '', password: '', confirmPassword: '' });
+  const [form, setForm] = useState({ mobileNumber: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   const validate = () => {
     const errs = {};
-    if (!form.email) errs.email = t.emailRequired;
-    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = t.invalidEmailFormat;
+    if (!form.mobileNumber) errs.mobileNumber = t.mobileRequired;
+    else if (!/^[6-9]\d{9}$/.test(form.mobileNumber)) errs.mobileNumber = t.invalidMobile;
     if (!form.password) errs.password = t.passwordRequired;
     else if (form.password.length < 6) errs.password = t.passwordMinLength;
     if (!form.confirmPassword) errs.confirmPassword = t.confirmPasswordRequired;
@@ -35,7 +35,7 @@ function Signup() {
     setLoading(true);
     try {
       const res = await api.post('/api/auth/register', {
-        email: form.email,
+        mobileNumber: form.mobileNumber,
         password: form.password
       });
       const { token, user } = res.data;
@@ -62,21 +62,22 @@ function Signup() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">{t.emailAddress}</label>
+            <label className="form-label">{t.mobileNumber}</label>
             <div className="input-group">
               <span className="input-group-text" style={{ background: '#f8f4ff', border: '2px solid #e8e0f5', borderRight: 'none' }}>
-                <FiMail color="#6C3FC5" />
+                <FiPhone color="#6C3FC5" />
               </span>
               <input
-                type="email"
-                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                type="tel"
+                className={`form-control ${errors.mobileNumber ? 'is-invalid' : ''}`}
                 style={{ borderLeft: 'none' }}
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder={t.mobilePlaceholder}
+                maxLength={10}
+                value={form.mobileNumber}
+                onChange={(e) => setForm({ ...form, mobileNumber: e.target.value.replace(/\D/g, '') })}
               />
             </div>
-            {errors.email && <div className="text-danger mt-1" style={{ fontSize: '12px' }}>{errors.email}</div>}
+            {errors.mobileNumber && <div className="text-danger mt-1" style={{ fontSize: '12px' }}>{errors.mobileNumber}</div>}
           </div>
 
           <div className="mb-3">

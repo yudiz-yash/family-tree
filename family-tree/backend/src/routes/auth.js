@@ -15,7 +15,9 @@ const generateToken = (id, role = 'user', email = null) => {
 router.post(
   '/register',
   [
-    body('email').isEmail().withMessage('Please provide a valid email'),
+    body('mobileNumber')
+      .matches(/^[6-9]\d{9}$/)
+      .withMessage('Please provide a valid 10-digit mobile number'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
   ],
   async (req, res) => {
@@ -24,15 +26,15 @@ router.post(
       return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { email, password } = req.body;
+    const { mobileNumber, password } = req.body;
 
     try {
-      const existingUser = await User.findOne({ email });
+      const existingUser = await User.findOne({ mobileNumber });
       if (existingUser) {
-        return res.status(400).json({ success: false, message: 'User already exists with this email' });
+        return res.status(400).json({ success: false, message: 'User already exists with this mobile number' });
       }
 
-      const user = await User.create({ email, password, status: 'pending' });
+      const user = await User.create({ mobileNumber, password, status: 'pending' });
       const token = generateToken(user._id);
 
       res.status(201).json({
@@ -40,7 +42,7 @@ router.post(
         token,
         user: {
           id: user._id,
-          email: user.email,
+          mobileNumber: user.mobileNumber,
           profileCompleted: user.profileCompleted,
           paymentDone: user.paymentDone,
           role: user.role,
@@ -58,7 +60,9 @@ router.post(
 router.post(
   '/login',
   [
-    body('email').isEmail().withMessage('Please provide a valid email'),
+    body('mobileNumber')
+      .matches(/^[6-9]\d{9}$/)
+      .withMessage('Please provide a valid 10-digit mobile number'),
     body('password').notEmpty().withMessage('Password is required')
   ],
   async (req, res) => {
@@ -67,17 +71,17 @@ router.post(
       return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { email, password } = req.body;
+    const { mobileNumber, password } = req.body;
 
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ mobileNumber });
       if (!user) {
-        return res.status(401).json({ success: false, message: 'Invalid email or password' });
+        return res.status(401).json({ success: false, message: 'Invalid mobile number or password' });
       }
 
       const isMatch = await user.matchPassword(password);
       if (!isMatch) {
-        return res.status(401).json({ success: false, message: 'Invalid email or password' });
+        return res.status(401).json({ success: false, message: 'Invalid mobile number or password' });
       }
 
       if (user.status === 'rejected') {
@@ -104,6 +108,7 @@ router.post(
         token,
         user: {
           id: user._id,
+          mobileNumber: user.mobileNumber,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
@@ -158,6 +163,7 @@ router.get('/me', protect, async (req, res) => {
       success: true,
       user: {
         id: req.user._id,
+        mobileNumber: req.user.mobileNumber,
         email: req.user.email,
         firstName: req.user.firstName,
         lastName: req.user.lastName,

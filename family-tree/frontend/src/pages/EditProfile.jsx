@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiUser, FiMapPin, FiPhone, FiStar, FiArrowLeft, FiSave } from 'react-icons/fi';
+import { FiUser, FiMapPin, FiPhone, FiStar, FiArrowLeft, FiSave, FiMail } from 'react-icons/fi';
 import Navbar from '../components/Navbar';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
@@ -15,7 +15,8 @@ function EditProfile() {
     city: '',
     kuldeviName: '',
     surapura: '',
-    contactNumber: ''
+    contactNumber: '',
+    email: ''
   });
   const [kuldeviOptions, setKuldeviOptions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,7 +38,8 @@ function EditProfile() {
         city: u.city || '',
         kuldeviName: u.kuldeviName || '',
         surapura: u.surapura || '',
-        contactNumber: u.contactNumber || ''
+        contactNumber: u.contactNumber || '',
+        email: u.email || ''
       });
     } catch {
       toast.error(t.failedToLoadData);
@@ -54,6 +56,7 @@ function EditProfile() {
     if (!form.kuldeviName.trim()) errs.kuldeviName = t.kuldeviRequired;
     if (!form.surapura.trim()) errs.surapura = t.surapuraRequired;
     if (!form.contactNumber.trim()) errs.contactNumber = t.contactRequired;
+    if (form.email.trim() && !/\S+@\S+\.\S+/.test(form.email)) errs.email = t.invalidEmailFormat;
     return errs;
   };
 
@@ -254,7 +257,7 @@ function EditProfile() {
             </div>
 
             {/* Contact */}
-            <div className="mb-4">
+            <div className="mb-3">
               <label style={labelStyle}>
                 <FiPhone size={14} style={{ color: '#6C3FC5' }} />
                 {t.contactNumber}
@@ -269,6 +272,24 @@ function EditProfile() {
                 onBlur={e => e.target.style.borderColor = errors.contactNumber ? '#ef4444' : '#e8e0f5'}
               />
               {errors.contactNumber && <div style={{ color: '#ef4444', fontSize: 12, marginTop: 4 }}>{errors.contactNumber}</div>}
+            </div>
+
+            {/* Email (optional) */}
+            <div className="mb-4">
+              <label style={labelStyle}>
+                <FiMail size={14} style={{ color: '#6C3FC5' }} />
+                {t.emailOptional}
+              </label>
+              <input
+                type="email"
+                value={form.email}
+                onChange={e => setForm({ ...form, email: e.target.value })}
+                placeholder="you@example.com"
+                style={inputStyle(errors.email)}
+                onFocus={e => e.target.style.borderColor = '#6C3FC5'}
+                onBlur={e => e.target.style.borderColor = errors.email ? '#ef4444' : '#e8e0f5'}
+              />
+              {errors.email && <div style={{ color: '#ef4444', fontSize: 12, marginTop: 4 }}>{errors.email}</div>}
             </div>
 
             {/* Buttons */}

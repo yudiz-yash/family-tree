@@ -126,7 +126,7 @@ function Dashboard() {
               <thead>
                 <tr>
                   <th>User</th>
-                  <th>Email</th>
+                  <th>Mobile</th>
                   <th>City</th>
                   <th>Profile</th>
                   <th>Joined</th>
@@ -138,14 +138,14 @@ function Dashboard() {
                     <td>
                       <div className="d-flex align-items-center gap-2">
                         <div className="user-avatar">
-                          {user.firstName ? user.firstName[0].toUpperCase() : user.email[0].toUpperCase()}
+                          {user.firstName ? user.firstName[0].toUpperCase() : (user.mobileNumber || '?')[0]}
                         </div>
                         <span className="fw-semibold">
                           {user.firstName ? `${user.firstName} ${user.lastName}` : '—'}
                         </span>
                       </div>
                     </td>
-                    <td style={{ color: '#64748b' }}>{user.email}</td>
+                    <td style={{ color: '#64748b' }}>{user.mobileNumber || '—'}</td>
                     <td>{user.city || '—'}</td>
                     <td>
                       {user.profileCompleted ? (

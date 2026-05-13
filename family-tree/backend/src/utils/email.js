@@ -27,7 +27,8 @@ async function sendAdminNotification(user) {
         <p style="color:#374151">A new user has completed their profile and is awaiting your approval:</p>
         <table style="border-collapse:collapse;width:100%;margin-top:12px">
           ${row('Full Name', `${user.firstName || ''} ${user.lastName || ''}`.trim())}
-          ${row('Email', user.email)}
+          ${row('Mobile Number', user.mobileNumber)}
+          ${row('Email', user.email || '—')}
           ${row('City', user.city)}
           ${row('Kuldevi / Madh', user.kuldeviName)}
           ${row('Surapura', user.surapura)}
@@ -41,6 +42,7 @@ async function sendAdminNotification(user) {
 }
 
 async function sendApprovalEmail(user) {
+  if (!user.email) return;
   await transporter.sendMail({
     from: `"Family Tree" <${process.env.SMTP_USER}>`,
     to: user.email,
@@ -50,13 +52,14 @@ async function sendApprovalEmail(user) {
         <h2 style="color:#16a34a;margin-top:0">Account Approved!</h2>
         <p>Your registration for <strong>Luhar Dodiya Parivar Ekta Group</strong> family tree application has been approved.</p>
         <p>You can now log in to your account and start building your family tree.</p>
-        <p style="margin-top:16px;color:#6b7280;font-size:13px">Email: <strong>${user.email}</strong></p>
+        <p style="margin-top:16px;color:#6b7280;font-size:13px">Mobile: <strong>${user.mobileNumber}</strong></p>
       </div>
     `
   });
 }
 
 async function sendRejectionEmail(user) {
+  if (!user.email) return;
   await transporter.sendMail({
     from: `"Family Tree" <${process.env.SMTP_USER}>`,
     to: user.email,

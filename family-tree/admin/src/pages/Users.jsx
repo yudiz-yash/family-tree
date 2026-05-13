@@ -49,7 +49,8 @@ function Users() {
   const filtered = users.filter((u) => {
     const q = search.toLowerCase();
     return (
-      u.email.toLowerCase().includes(q) ||
+      (u.mobileNumber && u.mobileNumber.includes(q)) ||
+      (u.email && u.email.toLowerCase().includes(q)) ||
       (u.firstName && u.firstName.toLowerCase().includes(q)) ||
       (u.lastName && u.lastName.toLowerCase().includes(q)) ||
       (u.city && u.city.toLowerCase().includes(q))
@@ -100,7 +101,7 @@ function Users() {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Email</th>
+                  <th>Mobile</th>
                   <th>City</th>
                   <th>Kuldevi</th>
                   <th>Contact</th>
@@ -119,14 +120,14 @@ function Users() {
                         <div className="user-avatar">
                           {user.firstName
                             ? user.firstName[0].toUpperCase()
-                            : user.email[0].toUpperCase()}
+                            : (user.mobileNumber || '?')[0]}
                         </div>
                         <span className="fw-semibold">
                           {user.firstName ? `${user.firstName} ${user.lastName}` : '—'}
                         </span>
                       </div>
                     </td>
-                    <td style={{ color: '#64748b' }}>{user.email}</td>
+                    <td style={{ color: '#64748b' }}>{user.mobileNumber || '—'}</td>
                     <td>{user.city || '—'}</td>
                     <td>{user.kuldeviName || '—'}</td>
                     <td>{user.contactNumber || '—'}</td>

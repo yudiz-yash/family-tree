@@ -95,7 +95,7 @@ function Dashboard() {
                   Awaiting Approval
                 </h3>
                 <p style={{ color: '#78716c', fontSize: 15, lineHeight: 1.6 }}>
-                  Your profile and payment have been submitted successfully. The admin will review your details and you will receive an email at <strong>{user.email}</strong> once your account is approved.
+                  Your profile and payment have been submitted successfully. The admin will review your details and notify you once your account is approved.
                 </p>
                 <div style={{
                   marginTop: 24, padding: '14px 20px',

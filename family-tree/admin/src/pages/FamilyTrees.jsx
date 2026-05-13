@@ -52,8 +52,9 @@ function FamilyTrees() {
     const userName = t.userId
       ? `${t.userId.firstName || ''} ${t.userId.lastName || ''}`.toLowerCase()
       : '';
+    const mobile = t.userId?.mobileNumber || '';
     const email = t.userId?.email?.toLowerCase() || '';
-    return userName.includes(q) || email.includes(q);
+    return userName.includes(q) || mobile.includes(q) || email.includes(q);
   });
 
   if (loading) {
@@ -98,7 +99,7 @@ function FamilyTrees() {
               <thead>
                 <tr>
                   <th>User</th>
-                  <th>Email</th>
+                  <th>Mobile</th>
                   <th>Members</th>
                   <th>Male</th>
                   <th>Created</th>
@@ -117,7 +118,7 @@ function FamilyTrees() {
                         <div className="user-avatar">
                           {tree.userId?.firstName
                             ? tree.userId.firstName[0].toUpperCase()
-                            : tree.userId?.email?.[0]?.toUpperCase() || '?'}
+                            : (tree.userId?.mobileNumber || '?')[0]}
                         </div>
                         <span className="fw-semibold">
                           {tree.userId?.firstName
@@ -126,7 +127,7 @@ function FamilyTrees() {
                         </span>
                       </div>
                     </td>
-                    <td style={{ color: '#64748b' }}>{tree.userId?.email || '—'}</td>
+                    <td style={{ color: '#64748b' }}>{tree.userId?.mobileNumber || '—'}</td>
                     <td>
                       <span className="badge-info">
                         <FiGitMerge size={12} />

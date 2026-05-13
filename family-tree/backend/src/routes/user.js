@@ -15,7 +15,8 @@ router.put(
     body('city').notEmpty().withMessage('City is required'),
     body('kuldeviName').notEmpty().withMessage('Kuldevi name is required'),
     body('surapura').notEmpty().withMessage('Surapura is required'),
-    body('contactNumber').notEmpty().withMessage('Contact number is required')
+    body('contactNumber').notEmpty().withMessage('Contact number is required'),
+    body('email').optional({ checkFalsy: true }).isEmail().withMessage('Invalid email format')
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -23,13 +24,18 @@ router.put(
       return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { firstName, lastName, city, kuldeviName, surapura, contactNumber } = req.body;
+    const { firstName, lastName, city, kuldeviName, surapura, contactNumber, email } = req.body;
     const isFirstCompletion = !req.user.profileCompleted;
 
     try {
+      const updateData = { firstName, lastName, city, kuldeviName, surapura, contactNumber, profileCompleted: true };
+      if (email && email.trim()) {
+        updateData.email = email.trim().toLowerCase();
+      }
+
       const user = await User.findByIdAndUpdate(
         req.user._id,
-        { firstName, lastName, city, kuldeviName, surapura, contactNumber, profileCompleted: true },
+        updateData,
         { new: true }
       ).select('-password');
 
@@ -43,6 +49,7 @@ router.put(
         message: 'Profile updated successfully',
         user: {
           id: user._id,
+          mobileNumber: user.mobileNumber,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,

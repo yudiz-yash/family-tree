@@ -13,12 +13,19 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: ''
     },
-    email: {
+    mobileNumber: {
       type: String,
       required: true,
       unique: true,
-      lowercase: true,
       trim: true
+    },
+    email: {
+      type: String,
+      unique: true,
+      sparse: true,
+      lowercase: true,
+      trim: true,
+      default: null
     },
     password: {
       type: String,

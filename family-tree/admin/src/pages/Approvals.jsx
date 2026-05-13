@@ -66,7 +66,7 @@ function Approvals() {
   const filtered = users.filter(u => {
     const q = search.toLowerCase();
     const name = `${u.firstName || ''} ${u.lastName || ''}`.toLowerCase();
-    return u.email.toLowerCase().includes(q) || name.includes(q) || (u.city || '').toLowerCase().includes(q);
+    return (u.mobileNumber && u.mobileNumber.includes(q)) || (u.email && u.email.toLowerCase().includes(q)) || name.includes(q) || (u.city || '').toLowerCase().includes(q);
   });
 
   if (loading) {
@@ -131,7 +131,7 @@ function Approvals() {
                   }}>
                     {/* Avatar */}
                     <div className="user-avatar" style={{ flexShrink: 0 }}>
-                      {(user.firstName || user.email)[0].toUpperCase()}
+                      {(user.firstName || user.mobileNumber || '?')[0].toUpperCase()}
                     </div>
 
                     {/* Name + email */}
@@ -140,7 +140,7 @@ function Approvals() {
                         {fullName || <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>Profile not filled</span>}
                       </div>
                       <div style={{ fontSize: 12, color: '#64748b', display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                        <FiMail size={11} /> {user.email}
+                        <FiPhone size={11} /> {user.mobileNumber || '—'}
                       </div>
                     </div>
 
@@ -228,7 +228,8 @@ function Approvals() {
                       <div className="row g-3">
                         {[
                           { icon: FiUser, label: 'Full Name', value: fullName },
-                          { icon: FiMail, label: 'Email', value: user.email },
+                          { icon: FiPhone, label: 'Mobile', value: user.mobileNumber || '—' },
+                          { icon: FiMail, label: 'Email', value: user.email || '—' },
                           { icon: FiMapPin, label: 'City', value: user.city },
                           { emoji: '🕉️', label: 'Kuldevi / Madh', value: user.kuldeviName },
                           { emoji: '🏘️', label: 'Surapura', value: user.surapura },

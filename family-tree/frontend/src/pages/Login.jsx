@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiMail, FiLock } from 'react-icons/fi';
+import { FiPhone, FiLock } from 'react-icons/fi';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import LangSwitcher from '../components/LangSwitcher';
@@ -10,14 +10,14 @@ const logo = '/logo.png';
 function Login() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ mobileNumber: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   const validate = () => {
     const errs = {};
-    if (!form.email) errs.email = t.emailRequired;
-    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = t.invalidEmail;
+    if (!form.mobileNumber) errs.mobileNumber = t.mobileRequired;
+    else if (!/^[6-9]\d{9}$/.test(form.mobileNumber)) errs.mobileNumber = t.invalidMobile;
     if (!form.password) errs.password = t.passwordRequired;
     return errs;
   };
@@ -65,21 +65,22 @@ function Login() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">{t.emailAddress}</label>
+            <label className="form-label">{t.mobileNumber}</label>
             <div className="input-group">
               <span className="input-group-text" style={{ background: '#f8f4ff', border: '2px solid #e8e0f5', borderRight: 'none' }}>
-                <FiMail color="#6C3FC5" />
+                <FiPhone color="#6C3FC5" />
               </span>
               <input
-                type="email"
-                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                type="tel"
+                className={`form-control ${errors.mobileNumber ? 'is-invalid' : ''}`}
                 style={{ borderLeft: 'none' }}
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder={t.mobilePlaceholder}
+                maxLength={10}
+                value={form.mobileNumber}
+                onChange={(e) => setForm({ ...form, mobileNumber: e.target.value.replace(/\D/g, '') })}
               />
             </div>
-            {errors.email && <div className="text-danger mt-1" style={{ fontSize: '12px' }}>{errors.email}</div>}
+            {errors.mobileNumber && <div className="text-danger mt-1" style={{ fontSize: '12px' }}>{errors.mobileNumber}</div>}
           </div>
 
           <div className="mb-4">

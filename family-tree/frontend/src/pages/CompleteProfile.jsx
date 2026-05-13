@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiUser, FiMapPin, FiPhone, FiStar } from 'react-icons/fi';
+import { FiUser, FiMapPin, FiPhone, FiStar, FiMail } from 'react-icons/fi';
 import api from '../api/axios';
 import { useLanguage } from '../context/LanguageContext';
 import LangSwitcher from '../components/LangSwitcher';
@@ -15,7 +15,8 @@ function CompleteProfile() {
     city: '',
     kuldeviName: '',
     surapura: '',
-    contactNumber: ''
+    contactNumber: '',
+    email: ''
   });
   const [kuldeviOptions, setKuldeviOptions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,6 +34,7 @@ function CompleteProfile() {
     if (!form.kuldeviName.trim()) errs.kuldeviName = t.kuldeviRequired;
     if (!form.surapura.trim()) errs.surapura = t.surapuraRequired;
     if (!form.contactNumber.trim()) errs.contactNumber = t.contactRequired;
+    if (form.email.trim() && !/\S+@\S+\.\S+/.test(form.email)) errs.email = t.invalidEmailFormat;
     return errs;
   };
 
@@ -151,7 +153,7 @@ function CompleteProfile() {
             {errors.surapura && <div className="invalid-feedback">{errors.surapura}</div>}
           </div>
 
-          <div className="mb-4">
+          <div className="mb-3">
             <label className="form-label">
               <FiPhone size={14} className="me-1" style={{ color: '#6C3FC5' }} />
               {t.contactNumber}
@@ -164,6 +166,21 @@ function CompleteProfile() {
               onChange={(e) => setForm({ ...form, contactNumber: e.target.value })}
             />
             {errors.contactNumber && <div className="invalid-feedback">{errors.contactNumber}</div>}
+          </div>
+
+          <div className="mb-4">
+            <label className="form-label">
+              <FiMail size={14} className="me-1" style={{ color: '#6C3FC5' }} />
+              {t.emailOptional}
+            </label>
+            <input
+              type="email"
+              className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+              placeholder="you@example.com"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+            {errors.email && <div className="invalid-feedback">{errors.email}</div>}
           </div>
 
           <button type="submit" className="btn-primary-custom" disabled={loading}>

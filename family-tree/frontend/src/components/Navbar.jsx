@@ -48,7 +48,7 @@ function Navbar() {
               <li className="nav-item">
                 <span className="nav-link d-flex align-items-center gap-1" style={{ color: '#6C3FC5', fontWeight: 600 }}>
                   <FiUser size={16} />
-                  {user.firstName || user.email}
+                  {user.firstName || user.mobileNumber}
                 </span>
               </li>
             )}
