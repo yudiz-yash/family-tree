@@ -29,6 +29,7 @@ body {
   background: linear-gradient(135deg, #1e1b4b 0%, #4a2d8a 50%, #6C3FC5 100%);
   padding: 20px;
   position: relative;
+  overflow: hidden;
 }
 .auth-container::before {
   content: '';
