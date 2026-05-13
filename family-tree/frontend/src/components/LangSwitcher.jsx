@@ -9,19 +9,19 @@ export default function LangSwitcher() {
     <div style={{
       position: 'fixed', top: 16, right: 16, zIndex: 9999,
       display: 'flex', alignItems: 'center', gap: 6,
-      background: 'rgba(108,63,197,0.15)',
-      border: '1px solid rgba(108,63,197,0.35)',
+      background: 'rgba(255,255,255,0.15)',
+      border: '1px solid rgba(255,255,255,0.4)',
       borderRadius: 10, padding: '6px 12px',
       backdropFilter: 'blur(8px)',
     }}>
-      <FiGlobe size={14} style={{ color: '#6C3FC5' }} />
+      <FiGlobe size={14} style={{ color: '#fff' }} />
       <select
         value={lang}
         onChange={e => switchLang(e.target.value)}
         style={{
           background: 'transparent',
           border: 'none',
-          color: '#6C3FC5',
+          color: '#fff',
           fontSize: 13,
           fontWeight: 700,
           cursor: 'pointer',
@@ -32,10 +32,10 @@ export default function LangSwitcher() {
           paddingRight: 16,
         }}
       >
-        <option value="gu">{t.gujarati}</option>
-        <option value="en">{t.english}</option>
+        <option value="gu" style={{ color: '#1e1b4b' }}>{t.gujarati}</option>
+        <option value="en" style={{ color: '#1e1b4b' }}>{t.english}</option>
       </select>
-      <span style={{ fontSize: 10, color: '#6C3FC5', pointerEvents: 'none' }}>▼</span>
+      <span style={{ fontSize: 10, color: '#fff', pointerEvents: 'none' }}>▼</span>
     </div>
   );
 }
