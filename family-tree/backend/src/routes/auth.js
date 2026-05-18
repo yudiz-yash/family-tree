@@ -91,16 +91,6 @@ router.post(
         });
       }
 
-      // pending + profile done + payment done → block until admin approves
-      if (user.status === 'pending' && user.profileCompleted && user.paymentDone) {
-        return res.status(401).json({
-          success: false,
-          pending: true,
-          message: 'Your account is pending admin approval. You will receive an email once approved.'
-        });
-      }
-
-      // allow login so user can complete profile or payment
       const token = generateToken(user._id);
 
       res.json({
