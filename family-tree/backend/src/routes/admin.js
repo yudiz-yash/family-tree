@@ -100,6 +100,24 @@ router.get('/family-trees', protect, isAdmin, async (req, res) => {
   }
 });
 
+// PUT /api/admin/users/:id/reset-password
+router.put('/users/:id/reset-password', protect, isAdmin, async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+    }
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    user.password = newPassword;
+    await user.save();
+    res.json({ success: true, message: 'Password reset successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 // DELETE /api/admin/users/:id  (hard delete user + their family tree)
 router.delete('/users/:id', protect, isAdmin, async (req, res) => {
   try {

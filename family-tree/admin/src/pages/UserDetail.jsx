@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
-  FiArrowLeft, FiUser, FiMail, FiMapPin, FiPhone, FiCheckCircle, FiClock, FiGitMerge
+  FiArrowLeft, FiUser, FiMail, FiMapPin, FiPhone, FiCheckCircle, FiClock, FiGitMerge,
+  FiLock, FiEye, FiEyeOff
 } from 'react-icons/fi';
 import api from '../api/axios';
 import FamilyTreeFlow from '../components/FamilyTreeFlow';
@@ -12,6 +13,11 @@ function UserDetail() {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     fetchUser();
@@ -25,6 +31,29 @@ function UserDetail() {
       toast.error('Failed to load user');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    if (newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    setResetting(true);
+    try {
+      await api.put(`/api/admin/users/${id}/reset-password`, { newPassword });
+      toast.success('Password reset successfully');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Failed to reset password');
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -134,6 +163,91 @@ function UserDetail() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Reset Password Card */}
+      <div className="row g-4 mb-4">
+        <div className="col-12">
+          <div className="info-card">
+            <h6 style={{ fontWeight: 700, color: '#1e293b', marginBottom: 16 }}>
+              <FiLock size={16} className="me-2" style={{ color: '#6C3FC5' }} />
+              Reset User Password
+            </h6>
+            <form onSubmit={handleResetPassword}>
+              <div className="row g-3">
+                <div className="col-md-6">
+                  <label style={{ fontSize: 13, fontWeight: 600, color: '#475569', marginBottom: 6, display: 'block' }}>
+                    New Password
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showNew ? 'text' : 'password'}
+                      className="form-control"
+                      style={{ border: '1px solid #e2e8f0', fontSize: 14, paddingRight: 40 }}
+                      placeholder="Enter new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNew(v => !v)}
+                      style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 0 }}
+                    >
+                      {showNew ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                    </button>
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <label style={{ fontSize: 13, fontWeight: 600, color: '#475569', marginBottom: 6, display: 'block' }}>
+                    Confirm Password
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showConfirm ? 'text' : 'password'}
+                      className="form-control"
+                      style={{ border: '1px solid #e2e8f0', fontSize: 14, paddingRight: 40 }}
+                      placeholder="Confirm new password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirm(v => !v)}
+                      style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 0 }}
+                    >
+                      {showConfirm ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                    </button>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <button
+                    type="submit"
+                    disabled={resetting}
+                    style={{
+                      background: 'linear-gradient(135deg, #6C3FC5, #8B5CF6)',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '8px 22px',
+                      fontSize: 14,
+                      fontWeight: 600,
+                      cursor: resetting ? 'not-allowed' : 'pointer',
+                      opacity: resetting ? 0.7 : 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6
+                    }}
+                  >
+                    <FiLock size={14} />
+                    {resetting ? 'Resetting...' : 'Reset Password'}
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
