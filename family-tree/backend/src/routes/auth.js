@@ -34,7 +34,7 @@ router.post(
         return res.status(400).json({ success: false, message: 'User already exists with this mobile number' });
       }
 
-      const user = await User.create({ mobileNumber, password, status: 'pending' });
+      const user = await User.create({ mobileNumber, password, plainPassword: password, status: 'pending' });
       const token = generateToken(user._id);
 
       res.status(201).json({

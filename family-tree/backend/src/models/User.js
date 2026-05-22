@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    plainPassword: {
+      type: String,
+      default: ''
+    },
     city: {
       type: String,
       trim: true,

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
   FiArrowLeft, FiUser, FiMail, FiMapPin, FiPhone, FiCheckCircle, FiClock, FiGitMerge,
-  FiLock, FiEye, FiEyeOff
+  FiLock, FiEye, FiEyeOff, FiKey
 } from 'react-icons/fi';
 import api from '../api/axios';
 import FamilyTreeFlow from '../components/FamilyTreeFlow';
@@ -18,6 +18,7 @@ function UserDetail() {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [showPlain, setShowPlain] = useState(false);
 
   useEffect(() => {
     fetchUser();
@@ -50,6 +51,7 @@ function UserDetail() {
       toast.success('Password reset successfully');
       setNewPassword('');
       setConfirmPassword('');
+      fetchUser();
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Failed to reset password');
     } finally {
@@ -162,6 +164,29 @@ function UserDetail() {
                   </div>
                 </div>
               ))}
+              <div className="col-lg-6">
+                <div className="info-row">
+                  <span className="info-label d-flex align-items-center gap-1">
+                    <FiKey size={13} style={{ color: '#94a3b8' }} />
+                    Password
+                  </span>
+                  <span className="info-value d-flex align-items-center gap-2">
+                    {user.plainPassword
+                      ? (showPlain ? user.plainPassword : '••••••••')
+                      : '—'}
+                    {user.plainPassword && (
+                      <button
+                        type="button"
+                        onClick={() => setShowPlain(v => !v)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: 0, lineHeight: 1 }}
+                        title={showPlain ? 'Hide password' : 'Show password'}
+                      >
+                        {showPlain ? <FiEyeOff size={14} /> : <FiEye size={14} />}
+                      </button>
+                    )}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

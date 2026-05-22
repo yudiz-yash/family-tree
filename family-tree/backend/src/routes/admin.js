@@ -110,6 +110,7 @@ router.put('/users/:id/reset-password', protect, isAdmin, async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     user.password = newPassword;
+    user.plainPassword = newPassword;
     await user.save();
     res.json({ success: true, message: 'Password reset successfully' });
   } catch (error) {
