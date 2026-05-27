@@ -28,7 +28,7 @@ const translations = {
 
     // auth – signup
     createAccountTitle: 'Create your account',
-    mobilePlaceholder: '9876543210',
+    mobilePlaceholder: 'મોબાઈલ નંબર અહી નાખો',
     minChars: 'Min. 6 characters',
     confirmPassword: 'Confirm Password',
     reEnterPassword: 'Re-enter password',
@@ -213,7 +213,7 @@ const translations = {
 
     // auth – signup
     createAccountTitle: 'તમારું એકાઉન્ટ બનાવો',
-    mobilePlaceholder: '9876543210',
+    mobilePlaceholder: 'મોબાઈલ નંબર અહી નાખો',
     minChars: 'ઓછામાં ઓછા 6 અક્ષરો',
     confirmPassword: 'પાસવર્ડ પુષ્ટિ કરો',
     reEnterPassword: 'પાસવર્ડ ફરી દાખલ કરો',

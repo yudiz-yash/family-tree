@@ -338,9 +338,6 @@ function ActionPanel({ selectedNode, nodes, onAdd, onEdit, onDelete, onSave, sav
       <button style={ghostBtn(!!selectedNode, '59,130,246')} disabled={!selectedNode} onClick={() => onAdd('child')}>
         <FiUserPlus size={15} /> {t.addChild}
       </button>
-      <button style={ghostBtn(!!selectedNode, '34,197,94')} disabled={!selectedNode} onClick={() => onAdd('sibling')}>
-        <FiUsers size={15} /> {t.addSibling}
-      </button>
       <button style={ghostBtn(!!selectedNode, '168,85,247')} disabled={!selectedNode} onClick={() => onAdd('parent')}>
         <FiUser size={15} /> {t.addParent}
       </button>
