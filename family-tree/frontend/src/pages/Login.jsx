@@ -39,7 +39,7 @@ function Login() {
       toast.success(t.loginSuccess);
       if (!user.profileCompleted) {
         navigate('/complete-profile');
-      } else if (!user.paymentDone) {
+      } else if (user.status !== 'approved') {
         navigate('/payment');
       } else {
         navigate('/dashboard');

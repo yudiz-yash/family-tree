@@ -9,9 +9,8 @@ function PrivateRoute({ children, onlyApproved = false }) {
     return <Navigate to="/login" replace />;
   }
 
-  // If status exists and is not approved, block access to restricted pages
-  if (onlyApproved && user?.status && user.status !== 'approved') {
-    return <Navigate to="/dashboard" replace />;
+  if (onlyApproved && user?.status !== 'approved') {
+    return <Navigate to="/payment" replace />;
   }
 
   return children;
