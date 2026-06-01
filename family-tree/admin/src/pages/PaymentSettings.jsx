@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
-import { FiUpload, FiSave, FiDollarSign, FiImage, FiTrash2 } from 'react-icons/fi';
+import { FiUpload, FiSave, FiDollarSign, FiImage, FiTrash2, FiTool } from 'react-icons/fi';
 import api from '../api/axios';
 
 function PaymentSettings() {
   const [qrCodeImage, setQrCodeImage] = useState('');
   const [paymentAmount, setPaymentAmount] = useState('');
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [togglingMaintenance, setTogglingMaintenance] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const fileInputRef = useRef(null);
@@ -15,10 +17,25 @@ function PaymentSettings() {
       .then(res => {
         setQrCodeImage(res.data.qrCodeImage || '');
         setPaymentAmount(res.data.paymentAmount || '');
+        setMaintenanceMode(res.data.maintenanceMode ?? false);
       })
       .catch(() => toast.error('Failed to load settings'))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleMaintenanceToggle = async () => {
+    const newVal = !maintenanceMode;
+    setTogglingMaintenance(true);
+    try {
+      await api.put('/api/admin/settings', { maintenanceMode: newVal });
+      setMaintenanceMode(newVal);
+      toast.success(newVal ? 'Maintenance mode enabled' : 'Maintenance mode disabled');
+    } catch {
+      toast.error('Failed to update maintenance mode');
+    } finally {
+      setTogglingMaintenance(false);
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -58,8 +75,88 @@ function PaymentSettings() {
 
   return (
     <div>
-      <h4 className="page-title">Payment Settings</h4>
-      <p className="page-subtitle">Upload a QR code and set the payment amount shown to users during registration.</p>
+      <h4 className="page-title">Settings</h4>
+      <p className="page-subtitle">Manage site maintenance mode and payment settings.</p>
+
+      {/* Maintenance Mode */}
+      <div className="admin-table-card" style={{ padding: 24, marginBottom: 28 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{
+              width: 48, height: 48,
+              background: maintenanceMode ? 'linear-gradient(135deg, #6C3FC5, #8B5CF6)' : '#f1f5f9',
+              borderRadius: 14,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'background 0.3s',
+            }}>
+              <FiTool size={20} color={maintenanceMode ? '#fff' : '#94a3b8'} />
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 15, color: '#1e293b' }}>Maintenance Mode</div>
+              <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>
+                {maintenanceMode
+                  ? 'Website is currently offline for users'
+                  : 'Website is live and accessible to users'}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{
+              fontSize: 12, fontWeight: 700, letterSpacing: 0.5,
+              color: maintenanceMode ? '#dc2626' : '#16a34a',
+              background: maintenanceMode ? '#fff0f0' : '#f0fdf4',
+              border: `1px solid ${maintenanceMode ? '#fecaca' : '#bbf7d0'}`,
+              borderRadius: 20, padding: '3px 12px',
+            }}>
+              {maintenanceMode ? 'ON' : 'OFF'}
+            </span>
+
+            {/* Toggle switch */}
+            <button
+              onClick={handleMaintenanceToggle}
+              disabled={togglingMaintenance}
+              style={{
+                width: 52, height: 28,
+                borderRadius: 14,
+                background: maintenanceMode ? '#6C3FC5' : '#cbd5e1',
+                border: 'none',
+                cursor: togglingMaintenance ? 'not-allowed' : 'pointer',
+                position: 'relative',
+                transition: 'background 0.3s',
+                flexShrink: 0,
+                opacity: togglingMaintenance ? 0.7 : 1,
+              }}
+              title={maintenanceMode ? 'Disable maintenance mode' : 'Enable maintenance mode'}
+            >
+              <span style={{
+                position: 'absolute',
+                top: 3, left: maintenanceMode ? 26 : 3,
+                width: 22, height: 22,
+                background: '#fff',
+                borderRadius: '50%',
+                transition: 'left 0.3s',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
+              }} />
+            </button>
+          </div>
+        </div>
+
+        {maintenanceMode && (
+          <div style={{
+            marginTop: 16,
+            background: 'linear-gradient(135deg, #fff7ed, #fef3c7)',
+            border: '1px solid #fde68a',
+            borderRadius: 10,
+            padding: '10px 16px',
+            display: 'flex', alignItems: 'center', gap: 8,
+            fontSize: 13, color: '#92400e', fontWeight: 500,
+          }}>
+            <span style={{ fontSize: 16 }}>⚠️</span>
+            Maintenance mode is active — users will see the maintenance page instead of the website.
+          </div>
+        )}
+      </div>
 
       <div className="row g-4">
         {/* QR Code upload */}

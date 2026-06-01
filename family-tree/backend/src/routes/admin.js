@@ -202,7 +202,8 @@ router.get('/settings', protect, isAdmin, async (req, res) => {
     res.json({
       success: true,
       qrCodeImage: settings?.qrCodeImage || '',
-      paymentAmount: settings?.paymentAmount || ''
+      paymentAmount: settings?.paymentAmount || '',
+      maintenanceMode: settings?.maintenanceMode ?? true
     });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error' });
@@ -212,20 +213,26 @@ router.get('/settings', protect, isAdmin, async (req, res) => {
 // PUT /api/admin/settings
 router.put('/settings', protect, isAdmin, async (req, res) => {
   try {
-    const { qrCodeImage, paymentAmount } = req.body;
+    const { qrCodeImage, paymentAmount, maintenanceMode } = req.body;
     let settings = await Settings.findOne();
     if (!settings) {
-      settings = await Settings.create({ qrCodeImage: qrCodeImage || '', paymentAmount: paymentAmount || '' });
+      settings = await Settings.create({
+        qrCodeImage: qrCodeImage || '',
+        paymentAmount: paymentAmount || '',
+        maintenanceMode: maintenanceMode ?? true
+      });
     } else {
       if (qrCodeImage !== undefined) settings.qrCodeImage = qrCodeImage;
       if (paymentAmount !== undefined) settings.paymentAmount = paymentAmount;
+      if (maintenanceMode !== undefined) settings.maintenanceMode = maintenanceMode;
       await settings.save();
     }
     res.json({
       success: true,
       message: 'Settings saved',
       qrCodeImage: settings.qrCodeImage,
-      paymentAmount: settings.paymentAmount
+      paymentAmount: settings.paymentAmount,
+      maintenanceMode: settings.maintenanceMode
     });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error' });

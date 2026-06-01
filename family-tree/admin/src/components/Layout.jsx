@@ -22,7 +22,7 @@ const navItems = [
   { to: '/family-trees', icon: FiGitMerge, label: 'Family Trees' },
   { to: '/kuldevi', icon: FiStar, label: 'Madh / Kuldevi' },
   { to: '/common-tree', icon: FiShare2, label: 'Common Tree' },
-  { to: '/settings', icon: FiSettings, label: 'Payment Settings' }
+  { to: '/settings', icon: FiSettings, label: 'Settings' }
 ];
 
 function Layout({ children }) {
